@@ -1,21 +1,61 @@
 {
-    "recipes": [
-      {
-        "id": 1,
-        "title": "Spaghetti Bolognese",
-        "description": "Classic Italian pasta dish",
-        "ingredients": ["spaghetti", "ground beef", "tomato sauce"],
-        "instructions": "Cook pasta, prepare sauce, combine.",
-        "cookingTime": 45,
-        "servings": 4,
-        "category": "Dinner",
-        "rating": 4.5,
-        "nutritionalInfo": { "calories": 600, "protein": 25, "fat": 15, "carbs": 80 },
-        "comments": [
-          { "username": "User1", "text": "Delicious!", "timestamp": "2025-06-01T10:00:00Z" }
-        ]
-      }
-    ],
-    "users": [],
-    "comments": []
-  }
+  "recipes": [
+    {
+      "id": "5f63",
+      "title": "Com",
+      "description": "Com",
+      "ingredients": [
+        "Com"
+      ],
+      "instructions": "Com",
+      "cookingTime": 10,
+      "servings": 1,
+      "category": "Breakfast",
+      "dietaryTags": [
+        "dairy-free"
+      ],
+      "nutritionalInfo": {
+        "calories": 12,
+        "protein": 12,
+        "fat": 12,
+        "carbs": 12
+      },
+      "rating": 0,
+      "comments": [],
+      "createdAt": "2025-07-02T07:27:38.880Z",
+      "createdBy": "anonymous"
+    }
+  ],
+  "users": [
+    {
+      "id": "93af",
+      "username": "123123",
+      "email": "khoa.nld05505@sinhvien.hoasen.edu.vn",
+      "password": "12231231",
+      "profilePicture": "",
+      "dietaryPreferences": [
+        "vegan"
+      ],
+      "createdAt": "2025-07-02T07:40:12.844Z"
+    },
+    {
+      "id": "fbec",
+      "username": "Hello",
+      "email": "ngledangkhoa04@gmail.com",
+      "password": "12312312",
+      "profilePicture": "",
+      "dietaryPreferences": [
+        "vegetarian",
+        "vegan",
+        "gluten-free",
+        "dairy-free",
+        "keto",
+        "low-carb",
+        "high-protein",
+        "low-sodium"
+      ],
+      "createdAt": "2025-07-02T07:45:00.676Z"
+    }
+  ],
+  "comments": []
+}

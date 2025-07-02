@@ -45,31 +45,38 @@ export const RecipeProvider = ({ children }) => {
     localStorage.setItem("recentSearches", JSON.stringify(updatedSearches))
   }
 
-  const addRecipe = (newRecipe) => {
+  const addRecipe = async (newRecipe) => {
     const recipe = {
       ...newRecipe,
-      id: Date.now(),
       rating: 0,
       comments: [],
       createdAt: new Date().toISOString(),
       createdBy: JSON.parse(localStorage.getItem("currentUser"))?.username || "anonymous",
+    };
+    try {
+      const response = await axios.post(`${API_URL}/recipes`, recipe);
+      setRecipes(prev => [...prev, response.data]);
+    } catch (error) {
+      console.error("Failed to add recipe", error);
     }
-
-    const updatedRecipes = [...recipes, recipe]
-    setRecipes(updatedRecipes)
-    localStorage.setItem("recipes", JSON.stringify(updatedRecipes))
   }
 
-  const updateRecipe = (id, updatedRecipe) => {
-    const updatedRecipes = recipes.map((recipe) => (recipe.id === id ? { ...recipe, ...updatedRecipe } : recipe))
-    setRecipes(updatedRecipes)
-    localStorage.setItem("recipes", JSON.stringify(updatedRecipes))
+  const updateRecipe = async (id, updatedRecipe) => {
+    try {
+      const response = await axios.patch(`${API_URL}/recipes/${id}`, updatedRecipe);
+      setRecipes(prev => prev.map(recipe => recipe.id === id ? response.data : recipe));
+    } catch (error) {
+      console.error("Failed to update recipe", error);
+    }
   }
 
-  const deleteRecipe = (id) => {
-    const updatedRecipes = recipes.filter((recipe) => recipe.id !== id)
-    setRecipes(updatedRecipes)
-    localStorage.setItem("recipes", JSON.stringify(updatedRecipes))
+  const deleteRecipe = async (id) => {
+    try {
+      await axios.delete(`${API_URL}/recipes/${id}`);
+      setRecipes(prev => prev.filter(recipe => recipe.id !== id));
+    } catch (error) {
+      console.error("Failed to delete recipe", error);
+    }
   }
 
   const toggleFavorite = (recipeId) => {
@@ -81,36 +88,32 @@ export const RecipeProvider = ({ children }) => {
     localStorage.setItem("favorites", JSON.stringify(updatedFavorites))
   }
 
-  const addComment = (recipeId, comment) => {
-    const updatedRecipes = recipes.map((recipe) => {
-      if (recipe.id === recipeId) {
-        return {
-          ...recipe,
-          comments: [
-            ...recipe.comments,
-            {
-              id: Date.now(),
-              ...comment,
-              timestamp: new Date().toISOString(),
-            },
-          ],
-        }
-      }
-      return recipe
-    })
-    setRecipes(updatedRecipes)
-    localStorage.setItem("recipes", JSON.stringify(updatedRecipes))
+  const addComment = async (recipeId, comment) => {
+    const recipe = recipes.find(r => r.id === recipeId);
+    if (!recipe) return;
+    const updatedComments = [
+      ...recipe.comments,
+      {
+        id: Date.now(),
+        ...comment,
+        timestamp: new Date().toISOString(),
+      },
+    ];
+    try {
+      const response = await axios.patch(`${API_URL}/recipes/${recipeId}`, { comments: updatedComments });
+      setRecipes(prev => prev.map(r => r.id === recipeId ? response.data : r));
+    } catch (error) {
+      console.error("Failed to add comment", error);
+    }
   }
 
-  const rateRecipe = (recipeId, rating) => {
-    const updatedRecipes = recipes.map((recipe) => {
-      if (recipe.id === recipeId) {
-        return { ...recipe, rating }
-      }
-      return recipe
-    })
-    setRecipes(updatedRecipes)
-    localStorage.setItem("recipes", JSON.stringify(updatedRecipes))
+  const rateRecipe = async (recipeId, rating) => {
+    try {
+      const response = await axios.patch(`${API_URL}/recipes/${recipeId}`, { rating });
+      setRecipes(prev => prev.map(r => r.id === recipeId ? response.data : r));
+    } catch (error) {
+      console.error("Failed to rate recipe", error);
+    }
   }
 
   const setSearchTermWithTracking = (term) => {

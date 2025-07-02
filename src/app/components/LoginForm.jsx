@@ -15,86 +15,74 @@ export default function LoginForm({ onLogin }) {
   const [errors, setErrors] = useState({})
   const [showDietaryModal, setShowDietaryModal] = useState(false)
   const [pendingUser, setPendingUser] = useState(null)
-  const { login } = useAuth()
+  const { login, register, updateProfile } = useAuth()
+  const [loading, setLoading] = useState(false)
 
   const validateForm = () => {
     const newErrors = {}
-
     if (!formData.email) {
       newErrors.email = "Email is required"
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email is invalid"
     }
-
     if (!formData.password) {
       newErrors.password = "Password is required"
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters"
     }
-
     if (!isLogin && !formData.username) {
       newErrors.username = "Username is required"
     }
-
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-
     if (!validateForm()) return
-
+    setLoading(true)
+    setErrors({})
     if (isLogin) {
-      // Mock login - in real app, this would validate against backend
-      const users = JSON.parse(localStorage.getItem("users") || "[]")
-      const user = users.find((u) => u.email === formData.email && u.password === formData.password)
-
-      if (user) {
-        login(user)
+      try {
+        await login(formData.email, formData.password)
+        setLoading(false)
         onLogin()
-      } else {
-        setErrors({ general: "Invalid email or password" })
+      } catch (err) {
+        setLoading(false)
+        setErrors({ general: err.message })
       }
     } else {
-      // Register new user
-      const users = JSON.parse(localStorage.getItem("users") || "[]")
-      const existingUser = users.find((u) => u.email === formData.email)
-
-      if (existingUser) {
-        setErrors({ email: "User already exists" })
-        return
+      try {
+        // Register user (dietaryPreferences will be set after modal)
+        await register({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          profilePicture: formData.profilePicture || "",
+          dietaryPreferences: [],
+        })
+        setShowDietaryModal(true)
+        setPendingUser({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          profilePicture: formData.profilePicture || "",
+        })
+        setLoading(false)
+      } catch (err) {
+        setLoading(false)
+        setErrors({ email: err.message })
       }
-
-      const newUser = {
-        id: Date.now(),
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        profilePicture: formData.profilePicture || "",
-        createdAt: new Date().toISOString(),
-        dietaryPreferences: [],
-      }
-
-      // Store the user temporarily and show dietary preferences modal
-      setPendingUser(newUser)
-      setShowDietaryModal(true)
     }
   }
 
-  const handleDietaryPreferencesSave = (preferences) => {
-    if (pendingUser) {
-      const userWithPreferences = {
-        ...pendingUser,
-        dietaryPreferences: preferences,
-      }
-
-      const users = JSON.parse(localStorage.getItem("users") || "[]")
-      users.push(userWithPreferences)
-      localStorage.setItem("users", JSON.stringify(users))
-
-      login(userWithPreferences)
+  const handleDietaryPreferencesSave = async (preferences) => {
+    try {
+      await updateProfile({ dietaryPreferences: preferences })
+      setShowDietaryModal(false)
       onLogin()
+    } catch (err) {
+      setErrors({ general: err.message })
     }
   }
 
@@ -103,7 +91,6 @@ export default function LoginForm({ onLogin }) {
       ...formData,
       [e.target.name]: e.target.value,
     })
-    // Clear error when user starts typing
     if (errors[e.target.name]) {
       setErrors({
         ...errors,
@@ -117,9 +104,7 @@ export default function LoginForm({ onLogin }) {
       <div className="login-container">
         <div className="login-form">
           <h2>{isLogin ? "Login" : "Create Account"}</h2>
-
           {errors.general && <div className="error-message">{errors.general}</div>}
-
           <form onSubmit={handleSubmit}>
             {!isLogin && (
               <div className="form-group">
@@ -135,7 +120,6 @@ export default function LoginForm({ onLogin }) {
                 {errors.username && <span className="error-text">{errors.username}</span>}
               </div>
             )}
-
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <input
@@ -148,7 +132,6 @@ export default function LoginForm({ onLogin }) {
               />
               {errors.email && <span className="error-text">{errors.email}</span>}
             </div>
-
             <div className="form-group">
               <label htmlFor="password">Password</label>
               <input
@@ -161,7 +144,6 @@ export default function LoginForm({ onLogin }) {
               />
               {errors.password && <span className="error-text">{errors.password}</span>}
             </div>
-
             {!isLogin && (
               <div className="form-group">
                 <label htmlFor="profilePicture">Profile Picture URL (optional)</label>
@@ -174,12 +156,10 @@ export default function LoginForm({ onLogin }) {
                 />
               </div>
             )}
-
-            <button type="submit" className="submit-btn">
-              {isLogin ? "Login" : "Create Account"}
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? "Loading..." : isLogin ? "Login" : "Create Account"}
             </button>
           </form>
-
           <p className="toggle-form">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
             <button type="button" className="link-btn" onClick={() => setIsLogin(!isLogin)}>
@@ -188,7 +168,6 @@ export default function LoginForm({ onLogin }) {
           </p>
         </div>
       </div>
-
       <DietaryPreferencesModal
         isOpen={showDietaryModal}
         onClose={() => setShowDietaryModal(false)}
