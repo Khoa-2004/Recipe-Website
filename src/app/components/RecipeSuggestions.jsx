@@ -1,0 +1,341 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRecipes } from "../contexts/RecipeContext"
+import { useAuth } from "../contexts/AuthContext"
+import { ChevronLeft, ChevronRight, TrendingUp, Heart, Star, Clock, Users } from "lucide-react"
+
+export default function RecipeSuggestions({ onRecipeClick }) {
+  const { recipes, favorites } = useRecipes()
+  const { user } = useAuth()
+  const [suggestedRecipes, setSuggestedRecipes] = useState([])
+  const [trendingRecipes, setTrendingRecipes] = useState([])
+  const [currentSuggestionIndex, setCurrentSuggestionIndex] = useState(0)
+  const [currentTrendingIndex, setCurrentTrendingIndex] = useState(0)
+
+  useEffect(() => {
+    generateSuggestions()
+    generateTrendingRecipes()
+  }, [recipes, favorites, user])
+
+  const generateSuggestions = () => {
+    if (!recipes.length) return
+
+    // Get user preferences from various sources
+    const userPreferences = getUserPreferences()
+
+    // Score recipes based on user preferences
+    const scoredRecipes = recipes.map((recipe) => ({
+      ...recipe,
+      score: calculateRecipeScore(recipe, userPreferences),
+    }))
+
+    // Sort by score and take top 5, excluding user's own recipes
+    const suggestions = scoredRecipes
+      .filter((recipe) => recipe.createdBy !== user?.username)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+
+    setSuggestedRecipes(suggestions)
+  }
+
+  const generateTrendingRecipes = () => {
+    if (!recipes.length) return
+
+    // Calculate trending score based on rating, comments, and recency
+    const trendingScored = recipes.map((recipe) => ({
+      ...recipe,
+      trendingScore: calculateTrendingScore(recipe),
+    }))
+
+    // Sort by trending score and take top 5
+    const trending = trendingScored.sort((a, b) => b.trendingScore - a.trendingScore).slice(0, 5)
+
+    setTrendingRecipes(trending)
+  }
+
+  const getUserPreferences = () => {
+    const preferences = {
+      favoriteCategories: [],
+      recentSearches: [],
+      favoriteRecipeCategories: [],
+      dietaryPreferences: user?.dietaryPreferences || [],
+    }
+
+    // Get favorite categories from favorited recipes
+    const favoriteRecipesList = recipes.filter((recipe) => favorites.includes(recipe.id))
+    preferences.favoriteCategories = [...new Set(favoriteRecipesList.map((recipe) => recipe.category))]
+
+    // Get recent searches from localStorage
+    const recentSearches = JSON.parse(localStorage.getItem("recentSearches") || "[]")
+    preferences.recentSearches = recentSearches.slice(0, 5) // Last 5 searches
+
+    // Get categories from recently viewed recipes
+    const recentlyViewed = JSON.parse(localStorage.getItem("recentlyViewedRecipes") || "[]")
+    const recentlyViewedRecipes = recipes.filter((recipe) => recentlyViewed.includes(recipe.id))
+    preferences.favoriteRecipeCategories = [...new Set(recentlyViewedRecipes.map((recipe) => recipe.category))]
+
+    return preferences
+  }
+
+  const calculateRecipeScore = (recipe, preferences) => {
+    let score = 0
+
+    // Base score from rating
+    score += recipe.rating * 10
+
+    // Boost for favorite categories
+    if (preferences.favoriteCategories.includes(recipe.category)) {
+      score += 30
+    }
+
+    // Boost for recently viewed categories
+    if (preferences.favoriteRecipeCategories.includes(recipe.category)) {
+      score += 20
+    }
+
+    // Boost for recent search matches
+    preferences.recentSearches.forEach((search) => {
+      if (
+        recipe.title.toLowerCase().includes(search.toLowerCase()) ||
+        recipe.description.toLowerCase().includes(search.toLowerCase()) ||
+        recipe.ingredients.some((ing) => ing.toLowerCase().includes(search.toLowerCase()))
+      ) {
+        score += 25
+      }
+    })
+
+    // ENHANCED: Boost for dietary preferences matching dietary tags
+    if (recipe.dietaryTags && preferences.dietaryPreferences.length > 0) {
+      const matchingTags = recipe.dietaryTags.filter((tag) => preferences.dietaryPreferences.includes(tag))
+      score += matchingTags.length * 40 // High boost for dietary matches
+    }
+
+    // Legacy dietary preference matching (for older recipes without tags)
+    preferences.dietaryPreferences.forEach((pref) => {
+      const prefName = pref.replace("-", " ").toLowerCase()
+      if (recipe.title.toLowerCase().includes(prefName) || recipe.description.toLowerCase().includes(prefName)) {
+        score += 15
+      }
+    })
+
+    // Boost for shorter cooking times (convenience factor)
+    if (recipe.cookingTime <= 30) {
+      score += 10
+    }
+
+    // Boost for recipes with comments (engagement)
+    score += recipe.comments.length * 5
+
+    return score
+  }
+
+  const calculateTrendingScore = (recipe) => {
+    let score = 0
+
+    // Rating weight (40%)
+    score += recipe.rating * 20
+
+    // Comments weight (30%)
+    score += recipe.comments.length * 10
+
+    // Recency weight (20%) - newer recipes get higher scores
+    const daysSinceCreated = (Date.now() - new Date(recipe.createdAt).getTime()) / (1000 * 60 * 60 * 24)
+    const recencyScore = Math.max(0, 30 - daysSinceCreated) // Max 30 points, decreasing over time
+    score += recencyScore
+
+    // Engagement rate (10%) - recipes with high rating and comments
+    if (recipe.rating > 4 && recipe.comments.length > 2) {
+      score += 15
+    }
+
+    return score
+  }
+
+  const trackRecipeView = (recipe) => {
+    // Track recently viewed recipes
+    const recentlyViewed = JSON.parse(localStorage.getItem("recentlyViewedRecipes") || "[]")
+    const updatedViewed = [recipe.id, ...recentlyViewed.filter((id) => id !== recipe.id)].slice(0, 10)
+    localStorage.setItem("recentlyViewedRecipes", JSON.stringify(updatedViewed))
+
+    // Call the parent click handler
+    onRecipeClick(recipe)
+  }
+
+  const nextSuggestion = () => {
+    setCurrentSuggestionIndex((prev) => (prev + 1 >= suggestedRecipes.length - 2 ? 0 : prev + 1))
+  }
+
+  const prevSuggestion = () => {
+    setCurrentSuggestionIndex((prev) => (prev - 1 < 0 ? Math.max(0, suggestedRecipes.length - 3) : prev - 1))
+  }
+
+  const nextTrending = () => {
+    setCurrentTrendingIndex((prev) => (prev + 1 >= trendingRecipes.length - 2 ? 0 : prev + 1))
+  }
+
+  const prevTrending = () => {
+    setCurrentTrendingIndex((prev) => (prev - 1 < 0 ? Math.max(0, trendingRecipes.length - 3) : prev - 1))
+  }
+
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star key={i} size={14} className={i < Math.floor(rating) ? "star-filled" : "star-empty"} />
+    ))
+  }
+
+  const getDietaryTagIcon = (tagId) => {
+    const tagMap = {
+      vegetarian: "🥬",
+      vegan: "🌱",
+      "gluten-free": "🌾",
+      "dairy-free": "🥛",
+      keto: "🥑",
+      "low-carb": "🥩",
+      "high-protein": "💪",
+      "low-sodium": "🧂",
+    }
+    return tagMap[tagId] || "🏷️"
+  }
+
+  const SuggestionCard = ({ recipe, isTrending = false }) => (
+    <div className={`suggestion-card ${isTrending ? "trending-card" : ""}`} onClick={() => trackRecipeView(recipe)}>
+      {isTrending && (
+        <div className="trending-badge">
+          <TrendingUp size={12} />
+          Trending
+        </div>
+      )}
+
+      <div className="suggestion-image">
+        <img src={`/placeholder.svg?height=120&width=200`} alt={recipe.title} />
+        {favorites.includes(recipe.id) && (
+          <div className="favorite-indicator">
+            <Heart size={14} fill="currentColor" />
+          </div>
+        )}
+      </div>
+
+      <div className="suggestion-content">
+        <div className="suggestion-category">{recipe.category}</div>
+        <h4 className="suggestion-title">{recipe.title}</h4>
+        <p className="suggestion-description">{recipe.description}</p>
+
+        {/* Dietary Tags Display */}
+        {recipe.dietaryTags && recipe.dietaryTags.length > 0 && (
+          <div className="suggestion-dietary-tags">
+            {recipe.dietaryTags.slice(0, 3).map((tag) => (
+              <span key={tag} className="dietary-tag-mini" title={tag.replace("-", " ")}>
+                {getDietaryTagIcon(tag)}
+              </span>
+            ))}
+            {recipe.dietaryTags.length > 3 && (
+              <span className="dietary-tag-more">+{recipe.dietaryTags.length - 3}</span>
+            )}
+          </div>
+        )}
+
+        <div className="suggestion-meta">
+          <div className="meta-item">
+            <Clock size={12} />
+            <span>{recipe.cookingTime}m</span>
+          </div>
+          <div className="meta-item">
+            <Users size={12} />
+            <span>{recipe.servings}</span>
+          </div>
+          <div className="meta-item rating">
+            {renderStars(recipe.rating)}
+            <span>({recipe.rating})</span>
+          </div>
+        </div>
+
+        {recipe.comments.length > 0 && (
+          <div className="suggestion-engagement">
+            {recipe.comments.length} comment{recipe.comments.length !== 1 ? "s" : ""}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+
+  if (!recipes.length) return null
+
+  return (
+    <div className="recipe-suggestions">
+      {/* Suggested for You Section */}
+      {suggestedRecipes.length > 0 && (
+        <div className="suggestions-section">
+          <div className="suggestions-header">
+            <h3>
+              <Heart size={20} />
+              Suggested for You
+            </h3>
+            <p>Based on your preferences and activity</p>
+          </div>
+
+          <div className="suggestions-carousel">
+            <button className="carousel-btn prev" onClick={prevSuggestion} disabled={suggestedRecipes.length <= 3}>
+              <ChevronLeft size={20} />
+            </button>
+
+            <div className="suggestions-container">
+              <div
+                className="suggestions-track"
+                style={{
+                  transform: `translateX(-${currentSuggestionIndex * (100 / 3)}%)`,
+                  width: `${(suggestedRecipes.length / 3) * 100}%`,
+                }}
+              >
+                {suggestedRecipes.map((recipe) => (
+                  <SuggestionCard key={`suggested-${recipe.id}`} recipe={recipe} />
+                ))}
+              </div>
+            </div>
+
+            <button className="carousel-btn next" onClick={nextSuggestion} disabled={suggestedRecipes.length <= 3}>
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Trending Recipes Section */}
+      {trendingRecipes.length > 0 && (
+        <div className="suggestions-section">
+          <div className="suggestions-header">
+            <h3>
+              <TrendingUp size={20} />
+              Trending Now
+            </h3>
+            <p>Popular recipes everyone's talking about</p>
+          </div>
+
+          <div className="suggestions-carousel">
+            <button className="carousel-btn prev" onClick={prevTrending} disabled={trendingRecipes.length <= 3}>
+              <ChevronLeft size={20} />
+            </button>
+
+            <div className="suggestions-container">
+              <div
+                className="suggestions-track"
+                style={{
+                  transform: `translateX(-${currentTrendingIndex * (100 / 3)}%)`,
+                  width: `${(trendingRecipes.length / 3) * 100}%`,
+                }}
+              >
+                {trendingRecipes.map((recipe) => (
+                  <SuggestionCard key={`trending-${recipe.id}`} recipe={recipe} isTrending />
+                ))}
+              </div>
+            </div>
+
+            <button className="carousel-btn next" onClick={nextTrending} disabled={trendingRecipes.length <= 3}>
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
