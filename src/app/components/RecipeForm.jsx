@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import { useRecipes } from "../contexts/RecipeContext"
+import { useAuth } from "../contexts/AuthContext"
 import { X, Plus, Minus } from "lucide-react"
 
 export default function RecipeForm({ recipe, onClose }) {
   const { addRecipe, updateRecipe } = useRecipes()
+  const { user } = useAuth()
   const isEditing = !!recipe
 
   const [formData, setFormData] = useState({
@@ -23,6 +25,7 @@ export default function RecipeForm({ recipe, onClose }) {
       fat: "",
       carbs: "",
     },
+    imageUrl: recipe?.imageUrl || "",
   })
 
   const [errors, setErrors] = useState({})
@@ -30,14 +33,14 @@ export default function RecipeForm({ recipe, onClose }) {
   const categories = ["Breakfast", "Lunch", "Dinner", "Dessert", "Snack"]
 
   const dietaryOptions = [
-    { id: "vegetarian", name: "Vegetarian", icon: "🥬" },
-    { id: "vegan", name: "Vegan", icon: "🌱" },
-    { id: "gluten-free", name: "Gluten-Free", icon: "🌾" },
-    { id: "dairy-free", name: "Dairy-Free", icon: "🥛" },
-    { id: "keto", name: "Keto", icon: "🥑" },
-    { id: "low-carb", name: "Low-Carb", icon: "🥩" },
-    { id: "high-protein", name: "High-Protein", icon: "💪" },
-    { id: "low-sodium", name: "Low-Sodium", icon: "🧂" },
+    { id: "vegetarian", name: "Vegetarian", icon: "\uD83E\uDD6C" },
+    { id: "vegan", name: "Vegan", icon: "\uD83C\uDF31" },
+    { id: "gluten-free", name: "Gluten-Free", icon: "\uD83C\uDF3E" },
+    { id: "dairy-free", name: "Dairy-Free", icon: "\uD83E\uDD5B" },
+    { id: "keto", name: "Keto", icon: "\uD83E\uDD51" },
+    { id: "low-carb", name: "Low-Carb", icon: "\uD83E\uDD69" },
+    { id: "high-protein", name: "High-Protein", icon: "\uD83D\uDCAA" },
+    { id: "low-sodium", name: "Low-Sodium", icon: "\uD83E\uDDC2" },
   ]
 
   const validateForm = () => {
@@ -83,6 +86,7 @@ export default function RecipeForm({ recipe, onClose }) {
         fat: Number.parseInt(formData.nutritionalInfo.fat) || 0,
         carbs: Number.parseInt(formData.nutritionalInfo.carbs) || 0,
       },
+      createdBy: user?.username || "anonymous",
     }
 
     if (isEditing) {
@@ -338,6 +342,18 @@ export default function RecipeForm({ recipe, onClose }) {
                 />
               </div>
             </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="imageUrl">Recipe Image URL</label>
+            <input
+              type="url"
+              id="imageUrl"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={handleInputChange}
+              placeholder="Paste an image URL (e.g., https://...)"
+            />
           </div>
 
           <div className="form-actions">

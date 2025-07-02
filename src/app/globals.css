@@ -2787,3 +2787,11 @@ body {
     justify-content: center;
   }
 }
+
+.suggestion-card.empty-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  pointer-events: none;
+  min-height: 280px;
+}

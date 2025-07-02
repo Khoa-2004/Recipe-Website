@@ -56,7 +56,7 @@ export default function RecipeCard({ recipe, onClick }) {
   return (
     <div className="recipe-card" onClick={onClick}>
       <div className="recipe-image">
-        <img src={`/placeholder.svg?height=200&width=300`} alt={recipe.title} />
+        <img src={recipe.imageUrl || "/placeholder.svg?height=200&width=300"} alt={recipe.title} />
         <div className="recipe-actions">
           <button className={`favorite-btn ${isFavorite ? "favorited" : ""}`} onClick={handleFavoriteClick}>
             <Heart size={20} />
@@ -71,7 +71,9 @@ export default function RecipeCard({ recipe, onClick }) {
         <div className="recipe-category">{recipe.category}</div>
         <h3 className="recipe-title">{recipe.title}</h3>
         <p className="recipe-description">{recipe.description}</p>
-
+        {recipe.createdBy && (
+          <p className="recipe-author">by {recipe.createdBy}</p>
+        )}
         <div className="recipe-meta">
           <div className="meta-item">
             <Clock size={16} />

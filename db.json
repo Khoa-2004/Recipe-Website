@@ -1,49 +1,181 @@
 {
   "recipes": [
     {
-      "id": "5f63",
-      "title": "Com",
-      "description": "Com",
+      "id": "140c",
+      "title": "Garlic Butter Zucchini Noodles with Grilled Chicken",
+      "description": "This low-carb, high-protein dinner swaps traditional pasta for zucchini noodles, tossed in a rich garlic butter sauce and topped with juicy grilled chicken. It's a quick, flavorful meal perfect for anyone watching their carbs but not willing to sacrifice taste.",
       "ingredients": [
-        "Com"
+        "2 medium zucchini, spiralized",
+        "2 boneless, skinless chicken breasts"
       ],
-      "instructions": "Com",
-      "cookingTime": 10,
-      "servings": 1,
-      "category": "Breakfast",
+      "instructions": "Grill the Chicken:\n\nSeason chicken breasts with salt, pepper, and Italian seasoning.\n\nHeat olive oil in a grill pan or skillet over medium heat.\n\nCook chicken for 6–7 minutes per side until fully cooked. Remove and let rest before slicing.\n\nPrepare the Garlic Butter Sauce:\n\nIn the same pan, reduce heat to low. Add butter and garlic, sauté for 1–2 minutes until fragrant.\n\nCook Zucchini Noodles:\n\nAdd zucchini noodles to the pan and toss in the garlic butter for 2–3 minutes until just tender.\n\nSqueeze in lemon juice if desired.\n\nAssemble:\n\nDivide the zucchini noodles between two plates.\n\nTop with sliced grilled chicken and garnish with parsley.",
+      "cookingTime": 25,
+      "servings": 2,
+      "category": "Dinner",
       "dietaryTags": [
+        "keto",
+        "low-carb",
+        "high-protein",
+        "gluten-free"
+      ],
+      "nutritionalInfo": {
+        "calories": 390,
+        "protein": 35,
+        "fat": 24,
+        "carbs": 6
+      },
+      "imageUrl": "https://hips.hearstapps.com/hmg-prod/images/grilled-chicken-with-zucchini-noodles-1588952833.jpg?crop=1xw:0.84375xh;center,top&resize=1200:*",
+      "createdBy": "Khoa",
+      "createdAt": "2025-07-02T09:23:54.230Z",
+      "rating": 5,
+      "comments": [
+        {
+          "id": 1751448244551,
+          "username": "Khoa",
+          "text": "good",
+          "timestamp": "2025-07-02T09:24:04.559Z"
+        }
+      ]
+    },
+    {
+      "id": "832a",
+      "title": "Creamy Coconut Mango Chia Pudding",
+      "description": "A refreshing, tropical-inspired snack or dessert made with creamy coconut milk, fresh mango, and nutrient-packed chia seeds. It's naturally sweetened, dairy-free, and loaded with fiber and healthy fats — perfect for meal prep or a light treat!",
+      "ingredients": [
+        "1 cup unsweetened coconut milk",
+        "1/2 cup fresh mango, diced",
+        "3 tbsp chia seeds"
+      ],
+      "instructions": "In a mixing bowl or jar, combine coconut milk, chia seeds, maple syrup, vanilla, and salt. Stir well.\n\nCover and refrigerate for at least 2 hours (or overnight), stirring once after the first 30 minutes.\n\nOnce thickened, stir again and layer with diced mango in serving cups.\n\nTop with additional mango or coconut flakes if desired.\n\nServe chilled.",
+      "cookingTime": 130,
+      "servings": 2,
+      "category": "Dessert",
+      "dietaryTags": [
+        "vegetarian",
+        "vegan",
+        "gluten-free",
+        "low-sodium",
         "dairy-free"
       ],
       "nutritionalInfo": {
-        "calories": 12,
-        "protein": 12,
-        "fat": 12,
-        "carbs": 12
+        "calories": 240,
+        "protein": 4,
+        "fat": 16,
+        "carbs": 18
       },
-      "rating": 0,
-      "comments": [],
-      "createdAt": "2025-07-02T07:27:38.880Z",
-      "createdBy": "anonymous"
+      "imageUrl": "data:image/jpeg;base64,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",
+      "createdBy": "Khoa",
+      "createdAt": "2025-07-02T09:27:39.525Z",
+      "rating": 4,
+      "comments": [
+        {
+          "id": 1751448469391,
+          "username": "Khoa",
+          "text": "ok",
+          "timestamp": "2025-07-02T09:27:49.398Z"
+        }
+      ]
+    },
+    {
+      "id": "1e65",
+      "title": "Fluffy Banana Oat Protein Pancakes",
+      "description": "Start your morning strong with these fluffy banana oat protein pancakes. Made with gluten‑free oats, ripe banana, and plant‑based protein powder, they’re naturally sweet, dairy‑free, and packed with muscle‑fueling protein.",
+      "ingredients": [
+        "1 cup gluten‑free rolled oats",
+        "1 ripe banana",
+        "2 large eggs"
+      ],
+      "instructions": "Blend the Batter:\nCombine oats, banana, eggs, protein powder, almond milk, baking powder, cinnamon, and salt in a blender. Blend until smooth and pourable. If too thick, add a splash more almond milk.\n\nHeat the Pan:\nWarm a nonstick skillet or griddle over medium heat. Add a thin film of coconut or avocado oil.\n\nCook Pancakes:\nPour ~1/4 cup batter per pancake onto the hot pan. Cook 2–3 minutes until bubbles form on top and edges look set. Flip and cook an additional 1–2 minutes until golden.\n\nServe:\nStack pancakes on plates, add your favorite toppings (berries, nut butter, or a light drizzle of maple syrup), and enjoy immediately.",
+      "cookingTime": 15,
+      "servings": 2,
+      "category": "Breakfast",
+      "dietaryTags": [
+        "vegetarian",
+        "gluten-free",
+        "dairy-free",
+        "high-protein"
+      ],
+      "nutritionalInfo": {
+        "calories": 332,
+        "protein": 23,
+        "fat": 8,
+        "carbs": 43
+      },
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH1Cmb2g6nAcZRQkk_tuTwYFD8M09XZbbaAg&s",
+      "createdBy": "Khoa",
+      "createdAt": "2025-07-02T09:29:22.857Z",
+      "rating": 4,
+      "comments": []
+    },
+    {
+      "id": "9b66",
+      "title": "Grilled Salmon Power Bowl",
+      "description": "A vibrant, nutrient-dense lunch bowl featuring grilled salmon, quinoa, fresh veggies, and a creamy avocado-lime dressing. It's rich in protein, healthy fats, and fiber — perfect for fueling your afternoon without the post-lunch crash.",
+      "ingredients": [
+        "2 salmon fillets (4–5 oz each)",
+        "1/2 cup quinoa (dry)",
+        "1 cup water or broth (for quinoa)"
+      ],
+      "instructions": "Cook the Quinoa:\nRinse quinoa under cold water. Combine with 1 cup water in a small pot. Bring to a boil, reduce heat, cover, and simmer for 12–15 minutes. Fluff with a fork and set aside.\n\nPrepare the Dressing:\nIn a blender or small food processor, combine avocado, lime juice, olive oil, garlic powder, salt, and a splash of water. Blend until smooth. Adjust thickness with more water if needed.\n\nGrill the Salmon:\nRub salmon with olive oil, salt, and pepper. Grill or pan-sear for 3–4 minutes per side, until cooked through and flaky.\n\nAssemble the Bowl:\nDivide quinoa between two bowls. Arrange tomatoes, cucumber, cabbage, and carrots around the bowl. Top each with grilled salmon and drizzle with avocado-lime dressing.",
+      "cookingTime": 30,
+      "servings": 2,
+      "category": "Lunch",
+      "dietaryTags": [
+        "gluten-free",
+        "dairy-free",
+        "low-carb",
+        "high-protein"
+      ],
+      "nutritionalInfo": {
+        "calories": 480,
+        "protein": 35,
+        "fat": 26,
+        "carbs": 28
+      },
+      "imageUrl": "https://www.cafishgrill.com/cdn/shop/files/cfgolo122723_SalmonPowerBowl.jpg?v=1703782374",
+      "createdBy": "Khoa",
+      "createdAt": "2025-07-02T09:31:21.791Z",
+      "rating": 3,
+      "comments": []
+    },
+    {
+      "id": "b8f6",
+      "title": "No-Bake Peanut Butter Energy Bites",
+      "description": "These no-bake peanut butter energy bites are the perfect grab-and-go snack. Made with oats, peanut butter, honey, and chia seeds, they're packed with fiber, healthy fats, and just enough sweetness to keep you energized between meals.",
+      "ingredients": [
+        "1 cup rolled oats (gluten-free if needed)",
+        "1/2 cup natural peanut butter",
+        "1/4 cup honey or maple syrup"
+      ],
+      "instructions": "In a mixing bowl, stir together oats, chia seeds, and salt.\n\nAdd peanut butter, honey, and vanilla. Mix until well combined.\n\nFold in chocolate chips (if using).\n\nChill mixture in the fridge for 20 minutes to firm up.\n\nRoll into small balls (~1 inch diameter).\n\nStore in an airtight container in the fridge for up to 1 week.",
+      "cookingTime": 30,
+      "servings": 8,
+      "category": "Snack",
+      "dietaryTags": [
+        "vegetarian",
+        "gluten-free",
+        "high-protein"
+      ],
+      "nutritionalInfo": {
+        "calories": 210,
+        "protein": 7,
+        "fat": 12,
+        "carbs": 19
+      },
+      "imageUrl": "https://www.allrecipes.com/thmb/0f9NbIVyXR6WgIep3npaJUR6r7Q=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/AR-239969-no-bake-energy-bites-Beauty-2x1-cfcc578f5d35411987b481908af873db.jpg",
+      "createdBy": "Khoa",
+      "createdAt": "2025-07-02T09:33:07.416Z",
+      "rating": 4,
+      "comments": []
     }
   ],
   "users": [
     {
-      "id": "93af",
-      "username": "123123",
-      "email": "khoa.nld05505@sinhvien.hoasen.edu.vn",
-      "password": "12231231",
-      "profilePicture": "",
-      "dietaryPreferences": [
-        "vegan"
-      ],
-      "createdAt": "2025-07-02T07:40:12.844Z"
-    },
-    {
-      "id": "fbec",
-      "username": "Hello",
-      "email": "ngledangkhoa04@gmail.com",
-      "password": "12312312",
-      "profilePicture": "",
+      "id": "e24b",
+      "username": "Khoa",
+      "email": "khoa@gmail.com",
+      "password": "12345678",
+      "profilePicture": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/2048px-Windows_10_Default_Profile_Picture.svg.png",
       "dietaryPreferences": [
         "vegetarian",
         "vegan",
@@ -54,8 +186,32 @@
         "high-protein",
         "low-sodium"
       ],
-      "createdAt": "2025-07-02T07:45:00.676Z"
+      "createdAt": "2025-07-02T09:14:41.833Z",
+      "favorites": []
     }
   ],
-  "comments": []
+  "comments": [
+    {
+      "id": "c008",
+      "recipeId": null,
+      "username": "Khoa",
+      "text": "looks good",
+      "timestamp": "2025-07-02T09:21:43.882Z"
+    },
+    {
+      "id": "09cc",
+      "recipeId": "140c",
+      "username": "Khoa",
+      "text": "good",
+      "timestamp": "2025-07-02T09:24:04.551Z"
+    },
+    {
+      "id": "fdaa",
+      "recipeId": "832a",
+      "username": "Khoa",
+      "text": "ok",
+      "timestamp": "2025-07-02T09:27:49.391Z"
+    }
+  ],
+  "mealPlans": []
 }

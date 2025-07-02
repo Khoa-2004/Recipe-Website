@@ -5,6 +5,9 @@ import { useRecipes } from "../contexts/RecipeContext"
 import { useAuth } from "../contexts/AuthContext"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import { Save, FolderOpen, Trash2, Calendar } from "lucide-react"
+import axios from "axios"
+
+const API_URL = "http://localhost:3001"
 
 export default function MealPlanner() {
   const { recipes } = useRecipes()
@@ -32,8 +35,11 @@ export default function MealPlanner() {
     setAvailableRecipes(recipes)
 
     // Load saved meal plans
-    const savedPlans = localStorage.getItem(`savedMealPlans_${user?.id}`)
-    if (savedPlans) setSavedMealPlans(JSON.parse(savedPlans))
+    if (user?.id) {
+      axios.get(`${API_URL}/mealPlans?userId=${user.id}`)
+        .then(res => setSavedMealPlans(res.data))
+        .catch(() => setSavedMealPlans([]))
+    }
   }, [recipes, user])
 
   useEffect(() => {
@@ -51,9 +57,9 @@ export default function MealPlanner() {
       userId: user?.id,
     }
 
-    const updatedPlans = [...savedMealPlans, newPlan]
-    setSavedMealPlans(updatedPlans)
-    localStorage.setItem(`savedMealPlans_${user?.id}`, JSON.stringify(updatedPlans))
+    axios.post(`${API_URL}/mealPlans`, newPlan)
+      .then(res => setSavedMealPlans(prev => [...prev, res.data]))
+      .catch(err => {/* handle error */})
 
     setPlanName("")
     setShowSaveModal(false)
@@ -66,9 +72,9 @@ export default function MealPlanner() {
 
   const deleteSavedPlan = (planId) => {
     if (window.confirm("Are you sure you want to delete this meal plan?")) {
-      const updatedPlans = savedMealPlans.filter((plan) => plan.id !== planId)
-      setSavedMealPlans(updatedPlans)
-      localStorage.setItem(`savedMealPlans_${user?.id}`, JSON.stringify(updatedPlans))
+      axios.delete(`${API_URL}/mealPlans/${planId}`)
+        .then(() => setSavedMealPlans(prev => prev.filter(plan => plan.id !== planId)))
+        .catch(err => {/* handle error */})
     }
   }
 

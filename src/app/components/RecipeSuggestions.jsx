@@ -6,7 +6,7 @@ import { useAuth } from "../contexts/AuthContext"
 import { ChevronLeft, ChevronRight, TrendingUp, Heart, Star, Clock, Users } from "lucide-react"
 
 export default function RecipeSuggestions({ onRecipeClick }) {
-  const { recipes, favorites } = useRecipes()
+  const { recipes, favorites, filterCategory } = useRecipes()
   const { user } = useAuth()
   const [suggestedRecipes, setSuggestedRecipes] = useState([])
   const [trendingRecipes, setTrendingRecipes] = useState([])
@@ -16,40 +16,31 @@ export default function RecipeSuggestions({ onRecipeClick }) {
   useEffect(() => {
     generateSuggestions()
     generateTrendingRecipes()
-  }, [recipes, favorites, user])
+  }, [recipes, favorites, user, filterCategory])
 
   const generateSuggestions = () => {
     if (!recipes.length) return
 
-    // Get user preferences from various sources
-    const userPreferences = getUserPreferences()
-
-    // Score recipes based on user preferences
-    const scoredRecipes = recipes.map((recipe) => ({
-      ...recipe,
-      score: calculateRecipeScore(recipe, userPreferences),
-    }))
-
-    // Sort by score and take top 5, excluding user's own recipes
-    const suggestions = scoredRecipes
-      .filter((recipe) => recipe.createdBy !== user?.username)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5)
-
-    setSuggestedRecipes(suggestions)
+    let filtered = recipes;
+    if (filterCategory && filterCategory !== "All") {
+      filtered = filtered.filter((recipe) => recipe.category === filterCategory);
+    }
+    // Sort by rating, high to low
+    const suggestions = filtered
+      .slice()
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 5);
+    setSuggestedRecipes(suggestions);
   }
 
   const generateTrendingRecipes = () => {
     if (!recipes.length) return
 
-    // Calculate trending score based on rating, comments, and recency
-    const trendingScored = recipes.map((recipe) => ({
-      ...recipe,
-      trendingScore: calculateTrendingScore(recipe),
-    }))
-
-    // Sort by trending score and take top 5
-    const trending = trendingScored.sort((a, b) => b.trendingScore - a.trendingScore).slice(0, 5)
+    // Trending: sort all recipes by rating (descending), top 5
+    const trending = recipes
+      .slice()
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 5)
 
     setTrendingRecipes(trending)
   }
@@ -208,7 +199,7 @@ export default function RecipeSuggestions({ onRecipeClick }) {
       )}
 
       <div className="suggestion-image">
-        <img src={`/placeholder.svg?height=120&width=200`} alt={recipe.title} />
+        <img src={recipe.imageUrl || `/placeholder.svg?height=120&width=200`} alt={recipe.title} />
         {favorites.includes(recipe.id) && (
           <div className="favorite-indicator">
             <Heart size={14} fill="currentColor" />
@@ -259,6 +250,18 @@ export default function RecipeSuggestions({ onRecipeClick }) {
     </div>
   )
 
+  // Pad to always show 2 cards at a time
+  const getPaddedRecipes = (recipesArr) => {
+    if (recipesArr.length >= 2) return recipesArr;
+    return [...recipesArr, ...Array(2 - recipesArr.length).fill(null)];
+  };
+  const paddedSuggestions = getPaddedRecipes(suggestedRecipes);
+  const paddedTrending = getPaddedRecipes(trendingRecipes);
+
+  // Calculate number of pages for dots
+  const suggestionPages = Math.ceil(paddedSuggestions.length / 2);
+  const trendingPages = Math.ceil(paddedTrending.length / 2);
+
   if (!recipes.length) return null
 
   return (
@@ -275,7 +278,7 @@ export default function RecipeSuggestions({ onRecipeClick }) {
           </div>
 
           <div className="suggestions-carousel">
-            <button className="carousel-btn prev" onClick={prevSuggestion} disabled={suggestedRecipes.length <= 3}>
+            <button className="carousel-btn prev" onClick={prevSuggestion} disabled={suggestedRecipes.length <= 2}>
               <ChevronLeft size={20} />
             </button>
 
@@ -283,19 +286,33 @@ export default function RecipeSuggestions({ onRecipeClick }) {
               <div
                 className="suggestions-track"
                 style={{
-                  transform: `translateX(-${currentSuggestionIndex * (100 / 3)}%)`,
-                  width: `${(suggestedRecipes.length / 3) * 100}%`,
+                  transform: `translateX(-${currentSuggestionIndex * (100 / 2)}%)`,
+                  width: `${(paddedSuggestions.length / 2) * 100}%`,
                 }}
               >
-                {suggestedRecipes.map((recipe) => (
-                  <SuggestionCard key={`suggested-${recipe.id}`} recipe={recipe} />
-                ))}
+                {paddedSuggestions.map((recipe, idx) =>
+                  recipe ? (
+                    <SuggestionCard key={`suggested-${recipe.id}-${idx}`} recipe={recipe} />
+                  ) : (
+                    <div key={`suggested-empty-${idx}`} className="suggestion-card empty-card" />
+                  )
+                )}
               </div>
             </div>
 
-            <button className="carousel-btn next" onClick={nextSuggestion} disabled={suggestedRecipes.length <= 3}>
+            <button className="carousel-btn next" onClick={nextSuggestion} disabled={suggestedRecipes.length <= 2}>
               <ChevronRight size={20} />
             </button>
+          </div>
+          {/* Pagination dots for suggestions */}
+          <div className="carousel-dots">
+            {Array.from({ length: suggestionPages }).map((_, idx) => (
+              <button
+                key={idx}
+                className={`carousel-dot${currentSuggestionIndex === idx ? " active" : ""}`}
+                onClick={() => setCurrentSuggestionIndex(idx)}
+              />
+            ))}
           </div>
         </div>
       )}
@@ -312,7 +329,7 @@ export default function RecipeSuggestions({ onRecipeClick }) {
           </div>
 
           <div className="suggestions-carousel">
-            <button className="carousel-btn prev" onClick={prevTrending} disabled={trendingRecipes.length <= 3}>
+            <button className="carousel-btn prev" onClick={prevTrending} disabled={trendingRecipes.length <= 2}>
               <ChevronLeft size={20} />
             </button>
 
@@ -320,19 +337,33 @@ export default function RecipeSuggestions({ onRecipeClick }) {
               <div
                 className="suggestions-track"
                 style={{
-                  transform: `translateX(-${currentTrendingIndex * (100 / 3)}%)`,
-                  width: `${(trendingRecipes.length / 3) * 100}%`,
+                  transform: `translateX(-${currentTrendingIndex * (100 / 2)}%)`,
+                  width: `${(paddedTrending.length / 2) * 100}%`,
                 }}
               >
-                {trendingRecipes.map((recipe) => (
-                  <SuggestionCard key={`trending-${recipe.id}`} recipe={recipe} isTrending />
-                ))}
+                {paddedTrending.map((recipe, idx) =>
+                  recipe ? (
+                    <SuggestionCard key={`trending-${recipe.id}-${idx}`} recipe={recipe} isTrending />
+                  ) : (
+                    <div key={`trending-empty-${idx}`} className="suggestion-card empty-card" />
+                  )
+                )}
               </div>
             </div>
 
-            <button className="carousel-btn next" onClick={nextTrending} disabled={trendingRecipes.length <= 3}>
+            <button className="carousel-btn next" onClick={nextTrending} disabled={trendingRecipes.length <= 2}>
               <ChevronRight size={20} />
             </button>
+          </div>
+          {/* Pagination dots for trending */}
+          <div className="carousel-dots">
+            {Array.from({ length: trendingPages }).map((_, idx) => (
+              <button
+                key={idx}
+                className={`carousel-dot${currentTrendingIndex === idx ? " active" : ""}`}
+                onClick={() => setCurrentTrendingIndex(idx)}
+              />
+            ))}
           </div>
         </div>
       )}

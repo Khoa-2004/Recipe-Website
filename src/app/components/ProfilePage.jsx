@@ -21,15 +21,26 @@ export default function ProfilePage() {
   const favoriteRecipes = recipes.filter((recipe) => favorites.includes(recipe.id))
 
   const dietaryOptions = [
-    "Vegetarian",
-    "Vegan",
-    "Gluten-Free",
-    "Dairy-Free",
-    "Keto",
-    "Low-Carb",
-    "High-Protein",
-    "Low-Sodium",
+    { id: "vegetarian", name: "Vegetarian" },
+    { id: "vegan", name: "Vegan" },
+    { id: "gluten-free", name: "Gluten-Free" },
+    { id: "dairy-free", name: "Dairy-Free" },
+    { id: "keto", name: "Keto" },
+    { id: "low-carb", name: "Low-Carb" },
+    { id: "high-protein", name: "High-Protein" },
+    { id: "low-sodium", name: "Low-Sodium" },
   ]
+
+  const dietaryOptionsMap = {
+    "vegetarian": "Vegetarian",
+    "vegan": "Vegan",
+    "gluten-free": "Gluten-Free",
+    "dairy-free": "Dairy-Free",
+    "keto": "Keto",
+    "low-carb": "Low-Carb",
+    "high-protein": "High-Protein",
+    "low-sodium": "Low-Sodium",
+  };
 
   const handleSave = (e) => {
     e.preventDefault()
@@ -130,7 +141,7 @@ export default function ProfilePage() {
                 <div className="dietary-tags">
                   {user.dietaryPreferences.map((preference) => (
                     <span key={preference} className="dietary-tag">
-                      {preference.replace("-", " ")}
+                      {dietaryOptionsMap[preference] || preference}
                     </span>
                   ))}
                 </div>
@@ -281,13 +292,13 @@ export default function ProfilePage() {
                 <label>Dietary Preferences</label>
                 <div className="dietary-preferences">
                   {dietaryOptions.map((option) => (
-                    <label key={option} className="checkbox-label">
+                    <label key={option.id} className="checkbox-label">
                       <input
                         type="checkbox"
-                        checked={profileData.dietaryPreferences.includes(option)}
-                        onChange={() => handleDietaryChange(option)}
+                        checked={profileData.dietaryPreferences.includes(option.id)}
+                        onChange={() => handleDietaryChange(option.id)}
                       />
-                      {option}
+                      {option.name}
                     </label>
                   ))}
                 </div>

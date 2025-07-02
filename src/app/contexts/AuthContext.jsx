@@ -49,6 +49,20 @@ export const AuthProvider = ({ children }) => {
     const response = await axios.patch(`${API_URL}/users/${user.id}`, updatedData);
     setUser(response.data);
     localStorage.setItem("currentUser", JSON.stringify(response.data));
+    // If username changed, update all recipes created by the old username
+    if (updatedData.username && updatedData.username !== user.username) {
+      try {
+        const recipesRes = await axios.get(`${API_URL}/recipes?createdBy=${encodeURIComponent(user.username)}`);
+        const recipes = recipesRes.data;
+        await Promise.all(
+          recipes.map((recipe) =>
+            axios.patch(`${API_URL}/recipes/${recipe.id}`, { createdBy: updatedData.username })
+          )
+        );
+      } catch (err) {
+        console.error("Failed to update recipes' createdBy after username change", err);
+      }
+    }
   };
 
   const register = async (userData) => {

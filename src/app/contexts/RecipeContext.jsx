@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react"
 import axios from "axios"
+import { useAuth } from "./AuthContext"
 
 const RecipeContext = createContext()
 const API_URL = "http://localhost:3001"
@@ -21,6 +22,7 @@ export const RecipeProvider = ({ children }) => {
   const [filterCategory, setFilterCategory] = useState("All")
   const [sortBy, setSortBy] = useState("newest")
   const [loading, setLoading] = useState(false)
+  const { user, updateProfile } = useAuth();
 
   useEffect(() => {
     setLoading(true);
@@ -36,6 +38,14 @@ export const RecipeProvider = ({ children }) => {
       });
   }, []);
 
+  useEffect(() => {
+    if (user && user.favorites) {
+      setFavorites(user.favorites)
+    } else {
+      setFavorites([])
+    }
+  }, [user])
+
   // Track search terms for suggestions
   const trackSearch = (term) => {
     if (!term.trim()) return
@@ -48,9 +58,9 @@ export const RecipeProvider = ({ children }) => {
   const addRecipe = async (newRecipe) => {
     const recipe = {
       ...newRecipe,
+      createdAt: new Date().toISOString(),
       rating: 0,
       comments: [],
-      createdAt: new Date().toISOString(),
       createdBy: JSON.parse(localStorage.getItem("currentUser"))?.username || "anonymous",
     };
     try {
@@ -79,17 +89,45 @@ export const RecipeProvider = ({ children }) => {
     }
   }
 
-  const toggleFavorite = (recipeId) => {
-    const updatedFavorites = favorites.includes(recipeId)
-      ? favorites.filter((id) => id !== recipeId)
-      : [...favorites, recipeId]
-
+  const toggleFavorite = async (recipeId) => {
+    if (!user) {
+      alert("You must be logged in to favorite recipes.");
+      return;
+    }
+    let updatedFavorites;
+    if (favorites.includes(recipeId)) {
+      updatedFavorites = favorites.filter((id) => id !== recipeId)
+    } else {
+      updatedFavorites = [...favorites, recipeId]
+    }
     setFavorites(updatedFavorites)
-    localStorage.setItem("favorites", JSON.stringify(updatedFavorites))
+    try {
+      // PATCH the user's favorites in the API
+      const response = await axios.patch(`${API_URL}/users/${user.id}`, { favorites: updatedFavorites })
+      // Update the user in AuthContext with the new favorites
+      if (response.data) {
+        await updateProfile({ favorites: updatedFavorites })
+      }
+    } catch (error) {
+      console.error("Failed to update favorites in API", error)
+    }
   }
 
   const addComment = async (recipeId, comment) => {
-    const recipe = recipes.find(r => r.id === recipeId);
+    // Save comment in comments DB
+    try {
+      await axios.post(`${API_URL}/comments`, {
+        recipeId,
+        username: comment.username,
+        text: comment.text,
+        timestamp: comment.timestamp,
+      });
+    } catch (error) {
+      console.error("Failed to save comment in comments DB", error);
+    }
+
+    // Optionally, also update the recipe's comments array for immediate UI update
+    const recipe = recipes.find((r) => r.id === recipeId);
     if (!recipe) return;
     const updatedComments = [
       ...recipe.comments,
@@ -101,11 +139,11 @@ export const RecipeProvider = ({ children }) => {
     ];
     try {
       const response = await axios.patch(`${API_URL}/recipes/${recipeId}`, { comments: updatedComments });
-      setRecipes(prev => prev.map(r => r.id === recipeId ? response.data : r));
+      setRecipes((prev) => prev.map((r) => (r.id === recipeId ? response.data : r)));
     } catch (error) {
-      console.error("Failed to add comment", error);
+      console.error("Failed to add comment to recipe", error);
     }
-  }
+  };
 
   const rateRecipe = async (recipeId, rating) => {
     try {
@@ -158,6 +196,8 @@ export const RecipeProvider = ({ children }) => {
       default:
         break
     }
+
+    console.log(filtered.map(r => ({ id: r.id, createdAt: r.createdAt })));
 
     return filtered
   }
