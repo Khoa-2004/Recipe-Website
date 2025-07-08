@@ -27,7 +27,20 @@
       "imageUrl": "https://hips.hearstapps.com/hmg-prod/images/grilled-chicken-with-zucchini-noodles-1588952833.jpg?crop=1xw:0.84375xh;center,top&resize=1200:*",
       "createdBy": "Khoa",
       "createdAt": "2025-07-02T09:23:54.230Z",
-      "rating": 5,
+      "ratings": [
+        {
+          "userId": "user1",
+          "rating": 4
+        },
+        {
+          "userId": "user2",
+          "rating": 5
+        },
+        {
+          "userId": "e24b",
+          "rating": 4
+        }
+      ],
       "comments": [
         {
           "id": 1751448244551,
@@ -66,20 +79,63 @@
       "imageUrl": "data:image/jpeg;base64,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",
       "createdBy": "Khoa",
       "createdAt": "2025-07-02T09:27:39.525Z",
-      "rating": 4,
+      "ratings": [
+        {
+          "userId": "user1",
+          "rating": 4
+        },
+        {
+          "userId": "user2",
+          "rating": 5
+        },
+        {
+          "userId": "e24b",
+          "rating": 5
+        }
+      ],
       "comments": [
         {
-          "id": 1751448469391,
+          "id": "5d28594e-7c27-45eb-9b95-73dedd3957c4",
           "username": "Khoa",
-          "text": "ok",
-          "timestamp": "2025-07-02T09:27:49.398Z"
+          "text": "hay",
+          "timestamp": "2025-07-07T15:56:27.068Z"
+        },
+        {
+          "id": "a1b2c3d4-1111-2222-3333-444455556666",
+          "username": "Khoa",
+          "text": "hay",
+          "timestamp": "2025-07-07T15:56:27.086Z"
+        },
+        {
+          "id": "6107467c-ae7f-4350-b8df-beedeec953e9",
+          "username": "Khoa",
+          "text": "hau",
+          "timestamp": "2025-07-07T15:57:46.086Z"
+        },
+        {
+          "id": "b2c3d4e5-7777-8888-9999-aaaabbbbcccc",
+          "username": "Khoa",
+          "text": "hau",
+          "timestamp": "2025-07-07T15:57:46.098Z"
+        },
+        {
+          "id": "9e1a8742-d4df-4a5c-917e-d29f7500df54",
+          "username": "Khoa",
+          "text": "hay",
+          "timestamp": "2025-07-07T15:57:48.657Z"
+        },
+        {
+          "id": "c3d4e5f6-dddd-eeee-ffff-111122223333",
+          "username": "Khoa",
+          "text": "hay",
+          "timestamp": "2025-07-07T15:57:48.669Z"
         }
       ]
     },
     {
       "id": "1e65",
       "title": "Fluffy Banana Oat Protein Pancakes",
-      "description": "Start your morning strong with these fluffy banana oat protein pancakes. Made with gluten‑free oats, ripe banana, and plant‑based protein powder, they’re naturally sweet, dairy‑free, and packed with muscle‑fueling protein.",
+      "description": "Start your morning strong with these fluffy banana oat protein pancakes. Made with gluten‑free oats, ripe banana, and plant‑based protein powder, they're naturally sweet, dairy‑free, and packed with muscle‑fueling protein.",
       "ingredients": [
         "1 cup gluten‑free rolled oats",
         "1 ripe banana",
@@ -104,12 +160,32 @@
       "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH1Cmb2g6nAcZRQkk_tuTwYFD8M09XZbbaAg&s",
       "createdBy": "Khoa",
       "createdAt": "2025-07-02T09:29:22.857Z",
-      "rating": 4,
-      "comments": []
+      "ratings": [
+        {
+          "userId": "user1",
+          "rating": 4
+        },
+        {
+          "userId": "user2",
+          "rating": 5
+        },
+        {
+          "userId": "e24b",
+          "rating": 5
+        }
+      ],
+      "comments": [
+        {
+          "id": "e85c5f83-4f62-4040-85b1-4ff20727a50a",
+          "username": "sybau",
+          "text": "efef",
+          "timestamp": "2025-07-08T10:40:03.114Z"
+        }
+      ]
     },
     {
       "id": "9b66",
-      "title": "Grilled Salmon Power Bowl",
+      "title": "Grilled Salmon Power Bowl2",
       "description": "A vibrant, nutrient-dense lunch bowl featuring grilled salmon, quinoa, fresh veggies, and a creamy avocado-lime dressing. It's rich in protein, healthy fats, and fiber — perfect for fueling your afternoon without the post-lunch crash.",
       "ingredients": [
         "2 salmon fillets (4–5 oz each)",
@@ -135,37 +211,20 @@
       "imageUrl": "https://www.cafishgrill.com/cdn/shop/files/cfgolo122723_SalmonPowerBowl.jpg?v=1703782374",
       "createdBy": "Khoa",
       "createdAt": "2025-07-02T09:31:21.791Z",
-      "rating": 3,
-      "comments": []
-    },
-    {
-      "id": "b8f6",
-      "title": "No-Bake Peanut Butter Energy Bites",
-      "description": "These no-bake peanut butter energy bites are the perfect grab-and-go snack. Made with oats, peanut butter, honey, and chia seeds, they're packed with fiber, healthy fats, and just enough sweetness to keep you energized between meals.",
-      "ingredients": [
-        "1 cup rolled oats (gluten-free if needed)",
-        "1/2 cup natural peanut butter",
-        "1/4 cup honey or maple syrup"
+      "ratings": [
+        {
+          "userId": "user1",
+          "rating": 4
+        },
+        {
+          "userId": "user2",
+          "rating": 5
+        },
+        {
+          "userId": "e24b",
+          "rating": 4
+        }
       ],
-      "instructions": "In a mixing bowl, stir together oats, chia seeds, and salt.\n\nAdd peanut butter, honey, and vanilla. Mix until well combined.\n\nFold in chocolate chips (if using).\n\nChill mixture in the fridge for 20 minutes to firm up.\n\nRoll into small balls (~1 inch diameter).\n\nStore in an airtight container in the fridge for up to 1 week.",
-      "cookingTime": 30,
-      "servings": 8,
-      "category": "Snack",
-      "dietaryTags": [
-        "vegetarian",
-        "gluten-free",
-        "high-protein"
-      ],
-      "nutritionalInfo": {
-        "calories": 210,
-        "protein": 7,
-        "fat": 12,
-        "carbs": 19
-      },
-      "imageUrl": "https://www.allrecipes.com/thmb/0f9NbIVyXR6WgIep3npaJUR6r7Q=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/AR-239969-no-bake-energy-bites-Beauty-2x1-cfcc578f5d35411987b481908af873db.jpg",
-      "createdBy": "Khoa",
-      "createdAt": "2025-07-02T09:33:07.416Z",
-      "rating": 4,
       "comments": []
     },
     {
@@ -193,8 +252,484 @@
       "imageUrl": "https://plus.unsplash.com/premium_photo-1693221705288-7a2531eaa5e5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmJxfGVufDB8fDB8fHww",
       "createdBy": "sybau",
       "createdAt": "2025-07-02T09:53:55.467Z",
-      "rating": 0,
+      "ratings": [
+        {
+          "userId": "user1",
+          "rating": 4
+        },
+        {
+          "userId": "user2",
+          "rating": 5
+        },
+        {
+          "userId": "e24b",
+          "rating": 5
+        }
+      ],
       "comments": []
+    },
+    {
+      "id": "f92d",
+      "title": "Avocado Toast with Poached Egg",
+      "description": "A simple yet delicious breakfast with creamy avocado and perfectly poached eggs on toasted bread.",
+      "ingredients": [
+        "2 slices whole grain bread",
+        "1/2 avocado",
+        "2 eggs"
+      ],
+      "instructions": "Toast the bread. Mash avocado with salt and pepper. Poach eggs. Assemble and serve.",
+      "cookingTime": 13,
+      "servings": 3,
+      "category": "Breakfast",
+      "dietaryTags": [
+        "vegetarian",
+        "high-protein"
+      ],
+      "nutritionalInfo": {
+        "calories": 350,
+        "protein": 144,
+        "fat": 20,
+        "carbs": 25
+      },
+      "imageUrl": "https://nomoneynotime.com.au/uploads/recipes/shutterstock_1926492050-1.jpg",
+      "createdBy": "sybau",
+      "createdAt": "2025-07-08T10:58:57.613Z",
+      "rating": 0,
+      "comments": [
+        {
+          "id": "0e9f027b-d210-49c7-8d0d-6bff5b7a5a5b",
+          "username": "sybau",
+          "text": "good",
+          "timestamp": "2025-07-08T10:59:10.185Z"
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "f07a",
+          "rating": 4
+        }
+      ]
+    },
+    {
+      "id": "d5c3",
+      "title": "Chia Pudding with Berries",
+      "description": "A refreshing and nutritious chia seed pudding topped with fresh berries.",
+      "ingredients": [
+        "3 tbsp chia seeds",
+        "1 cup almond milk",
+        "1/2 cup berries",
+        "1 tsp maple syrup"
+      ],
+      "instructions": "Mix chia seeds with almond milk and maple syrup. Chill overnight. Top with berries.",
+      "cookingTime": 11,
+      "servings": 2,
+      "category": "Breakfast",
+      "dietaryTags": [
+        "vegan",
+        "gluten-free",
+        "low-sodium"
+      ],
+      "nutritionalInfo": {
+        "calories": 200,
+        "protein": 6,
+        "fat": 10,
+        "carbs": 20
+      },
+      "imageUrl": "https://thefoodiephysician.com/wp-content/uploads/2018/01/Berry-Chia-Pudding-Feature.jpg",
+      "createdBy": "sybau",
+      "createdAt": "2025-07-08T11:00:27.874Z",
+      "rating": 0,
+      "comments": [
+        {
+          "id": "11a77aaf-3954-4d01-8fdd-a9852ee732ab",
+          "username": "sybau",
+          "text": "ngon",
+          "timestamp": "2025-07-08T11:00:41.778Z"
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "f07a",
+          "rating": 5
+        }
+      ]
+    },
+    {
+      "id": "e7f6",
+      "title": "Quinoa Veggie Bowl",
+      "description": " A hearty and healthy lunch bowl packed with quinoa and fresh vegetables.",
+      "ingredients": [
+        "1 cup quinoa",
+        "1/2 cup chopped cucumber",
+        "1/2 cup cherry tomatoes",
+        "Lemon juice"
+      ],
+      "instructions": "Cook quinoa. Mix with vegetables and lemon juice. Serve chilled.",
+      "cookingTime": 23,
+      "servings": 4,
+      "category": "Lunch",
+      "dietaryTags": [
+        "vegetarian",
+        "low-carb"
+      ],
+      "nutritionalInfo": {
+        "calories": 420,
+        "protein": 12,
+        "fat": 15,
+        "carbs": 30
+      },
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoh2eCNIEXb6YZpEdBs-wtopdjMGFTbiNlWg&s",
+      "createdBy": "sybau",
+      "createdAt": "2025-07-08T11:01:57.602Z",
+      "rating": 0,
+      "comments": [
+        {
+          "id": "0a99057a-deed-474d-ab44-4e38bf92d19e",
+          "username": "sybau",
+          "text": "mid",
+          "timestamp": "2025-07-08T11:02:12.137Z"
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "f07a",
+          "rating": 3
+        }
+      ]
+    },
+    {
+      "id": "67ba",
+      "title": "Grilled Chicken Salad",
+      "description": "A protein-packed salad with grilled chicken breast and mixed greens.",
+      "ingredients": [
+        "1 chicken breast",
+        "2 cups mixed greens",
+        "1/2 avocado",
+        "Olive oil",
+        "Balsamic vinegar"
+      ],
+      "instructions": "Grill chicken. Toss with greens, avocado, and dressing. Serve.",
+      "cookingTime": 22,
+      "servings": 1,
+      "category": "Lunch",
+      "dietaryTags": [
+        "high-protein",
+        "gluten-free"
+      ],
+      "nutritionalInfo": {
+        "calories": 400,
+        "protein": 30,
+        "fat": 22,
+        "carbs": 8
+      },
+      "imageUrl": "https://valentinascorner.com/wp-content/uploads/2022/05/Chicken-Salad.jpg",
+      "createdBy": "sybau",
+      "createdAt": "2025-07-08T11:03:25.998Z",
+      "rating": 0,
+      "comments": [
+        {
+          "id": "c687cb4a-e209-4243-973b-df89555bd049",
+          "username": "sybau",
+          "text": "bad",
+          "timestamp": "2025-07-08T11:03:39.498Z"
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "f07a",
+          "rating": 1
+        }
+      ]
+    },
+    {
+      "id": "7e7f",
+      "title": "Zucchini Noodles with Pesto",
+      "description": "A light, low-carb dinner of zucchini noodles tossed with homemade basil pesto.",
+      "ingredients": [
+        "2 zucchinis",
+        "1/4 cup pesto",
+        "1 tbsp olive oil",
+        "Salt",
+        "Pepper"
+      ],
+      "instructions": "Spiralize zucchini. Toss with pesto and olive oil. Heat briefly. Serve warm.",
+      "cookingTime": 28,
+      "servings": 1,
+      "category": "Dinner",
+      "dietaryTags": [
+        "vegan",
+        "low-carb",
+        "gluten-free"
+      ],
+      "nutritionalInfo": {
+        "calories": 300,
+        "protein": 8,
+        "fat": 14,
+        "carbs": 14
+      },
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAgobNzlv_lRkQDajmdlGcs-mKo8WchcHelQ&s",
+      "createdBy": "sybau",
+      "createdAt": "2025-07-08T11:12:38.362Z",
+      "rating": 0,
+      "comments": [
+        {
+          "id": "4a9870d4-8644-49a2-9d6d-95f699a79062",
+          "username": "sybau",
+          "text": "not good",
+          "timestamp": "2025-07-08T11:12:59.942Z"
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "f07a",
+          "rating": 2
+        }
+      ]
+    },
+    {
+      "id": "5ce2",
+      "title": "Lentil Curry with Rice",
+      "description": "A comforting and hearty lentil curry served with steamed rice.",
+      "ingredients": [
+        "1 cup lentils",
+        "1/2 onion",
+        "1 tomato",
+        "Spices",
+        "1 cup rice"
+      ],
+      "instructions": "Cook lentils with onion, tomato, and spices. Serve with rice.\n\n",
+      "cookingTime": 15,
+      "servings": 1,
+      "category": "Dinner",
+      "dietaryTags": [
+        "vegan",
+        "dairy-free"
+      ],
+      "nutritionalInfo": {
+        "calories": 500,
+        "protein": 18,
+        "fat": 10,
+        "carbs": 45
+      },
+      "imageUrl": "https://cookingforpeanuts.com/wp-content/uploads/2021/09/15-Minute-Lentil-Veggie-Curry-1.jpg",
+      "createdBy": "sybau",
+      "createdAt": "2025-07-08T11:14:20.182Z",
+      "rating": 0,
+      "comments": [
+        {
+          "id": "258357aa-82d5-45dd-9aca-c0ca70527eb7",
+          "username": "sybau",
+          "text": "mid",
+          "timestamp": "2025-07-08T11:14:28.415Z"
+        },
+        {
+          "id": "6eeb92fe-e002-47cb-8473-d3e67726990d",
+          "username": "Khoa",
+          "text": "oo",
+          "timestamp": "2025-07-08T11:20:59.658Z"
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "f07a",
+          "rating": 3
+        },
+        {
+          "userId": "e24b",
+          "rating": 1
+        }
+      ]
+    },
+    {
+      "id": "4d43",
+      "title": "Vegan Chocolate Mousse",
+      "description": "A rich and creamy dessert made with avocado and cocoa powder.",
+      "ingredients": [
+        "1 avocado",
+        "2 tbsp cocoa powder",
+        "2 tbsp maple syrup",
+        "1 tsp vanilla extract"
+      ],
+      "instructions": "Blend avocado, cocoa powder, syrup, and vanilla. Chill before serving.",
+      "cookingTime": 24,
+      "servings": 3,
+      "category": "Dessert",
+      "dietaryTags": [
+        "vegan",
+        "gluten-free",
+        "dairy-free"
+      ],
+      "nutritionalInfo": {
+        "calories": 250,
+        "protein": 5,
+        "fat": 18,
+        "carbs": 20
+      },
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSw5lqRdzW1VK4-zwTg1VdjLUMhgkObwqbViQ&s",
+      "createdBy": "sybau",
+      "createdAt": "2025-07-08T11:15:34.718Z",
+      "rating": 0,
+      "comments": [
+        {
+          "id": "90d35daa-149d-4c30-9654-a14979d0b379",
+          "username": "sybau",
+          "text": "tasty",
+          "timestamp": "2025-07-08T11:15:45.836Z"
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "f07a",
+          "rating": 4
+        },
+        {
+          "userId": "e24b",
+          "rating": 1
+        }
+      ]
+    },
+    {
+      "id": "229b",
+      "title": "Coconut Milk Rice Pudding",
+      "description": "A creamy dessert made with coconut milk and aromatic spices.",
+      "ingredients": [
+        "1/2 cup rice",
+        "1 cup coconut milk",
+        "1 tbsp sugar",
+        "1/2 tsp cinnamon"
+      ],
+      "instructions": "Cook rice with coconut milk, sugar, and cinnamon until thick. Serve warm or chilled.",
+      "cookingTime": 22,
+      "servings": 3,
+      "category": "Dessert",
+      "dietaryTags": [
+        "vegetarian",
+        "dairy-free",
+        "low-sodium"
+      ],
+      "nutritionalInfo": {
+        "calories": 300,
+        "protein": 6,
+        "fat": 12,
+        "carbs": 35
+      },
+      "imageUrl": "https://www.foodandwine.com/thmb/NG2o4Fqo548O1t-MSMTvDN6tOMI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/201001-xl-coconut-arborio-rice-pudding-3da0316cb76f4817ad522ba5db19e866.jpg",
+      "createdBy": "sybau",
+      "createdAt": "2025-07-08T11:16:48.285Z",
+      "rating": 0,
+      "comments": [
+        {
+          "id": "12d093c8-d099-45a6-8819-6f38903334b7",
+          "username": "sybau",
+          "text": "good",
+          "timestamp": "2025-07-08T11:17:53.331Z"
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "f07a",
+          "rating": 5
+        },
+        {
+          "userId": "e24b",
+          "rating": 1
+        }
+      ]
+    },
+    {
+      "id": "a1e7",
+      "title": "Roasted Chickpeas",
+      "description": "A crunchy and savory snack perfect for on-the-go munching.",
+      "ingredients": [
+        "1 cup chickpeas",
+        "1 tbsp olive oil",
+        "1 tsp paprika",
+        "Salt"
+      ],
+      "instructions": "Toss chickpeas with oil and spices. Roast at 400°F for 30 mins.",
+      "cookingTime": 19,
+      "servings": 1,
+      "category": "Snack",
+      "dietaryTags": [
+        "vegan",
+        "gluten-free",
+        "high-protein"
+      ],
+      "nutritionalInfo": {
+        "calories": 150,
+        "protein": 7,
+        "fat": 4,
+        "carbs": 18
+      },
+      "imageUrl": "https://www.allrecipes.com/thmb/WdQzwYsrWX0-6zRprlfn7OitWN8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/81548-roasted-chickpeas-ddmfs-0442-1x2-hero-295c03efec90435a8588848f7e50f0bf.jpg",
+      "createdBy": "sybau",
+      "createdAt": "2025-07-08T11:17:42.654Z",
+      "rating": 0,
+      "comments": [
+        {
+          "id": "a8d2bbe9-b7f7-41ba-b7cc-7934c9b19d64",
+          "username": "sybau",
+          "text": "foooood",
+          "timestamp": "2025-07-08T11:18:10.183Z"
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "f07a",
+          "rating": 4
+        },
+        {
+          "userId": "e24b",
+          "rating": 5
+        }
+      ]
+    },
+    {
+      "id": "b1ca",
+      "title": "Energy Oat Balls",
+      "description": "No-bake snack balls made with oats, peanut butter, and honey for quick energy.",
+      "ingredients": [
+        "1 cup oats",
+        "1/2 cup peanut butter",
+        "1/4 cup honey",
+        "1/4 cup chocolate chips"
+      ],
+      "instructions": "Mix all ingredients. Roll into balls. Chill and enjoy.",
+      "cookingTime": 30,
+      "servings": 1,
+      "category": "Snack",
+      "dietaryTags": [
+        "vegetarian",
+        "low-sodium"
+      ],
+      "nutritionalInfo": {
+        "calories": 180,
+        "protein": 6,
+        "fat": 9,
+        "carbs": 20
+      },
+      "imageUrl": "https://www.allrecipes.com/thmb/0f9NbIVyXR6WgIep3npaJUR6r7Q=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/AR-239969-no-bake-energy-bites-Beauty-2x1-cfcc578f5d35411987b481908af873db.jpg",
+      "createdBy": "sybau",
+      "createdAt": "2025-07-08T11:19:09.810Z",
+      "rating": 0,
+      "comments": [
+        {
+          "id": "5dd9a20f-2d2f-4be5-92c7-ee4cab1691de",
+          "username": "sybau",
+          "text": "eh",
+          "timestamp": "2025-07-08T11:19:23.505Z"
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "f07a",
+          "rating": 3
+        },
+        {
+          "userId": "e24b",
+          "rating": 5
+        }
+      ]
     }
   ],
   "users": [
@@ -210,12 +745,20 @@
         "gluten-free",
         "dairy-free",
         "keto",
-        "low-carb",
         "high-protein",
-        "low-sodium"
+        "low-sodium",
+        "low-carb"
       ],
       "createdAt": "2025-07-02T09:14:41.833Z",
-      "favorites": []
+      "favorites": [
+        "9c6b",
+        "b1ca",
+        "a1e7",
+        "229b",
+        "4d43",
+        "5ce2",
+        "7e7f"
+      ]
     },
     {
       "id": "f07a",
@@ -228,7 +771,10 @@
         "high-protein",
         "dairy-free"
       ],
-      "createdAt": "2025-07-02T09:50:00.363Z"
+      "createdAt": "2025-07-02T09:50:00.363Z",
+      "favorites": [
+        "7e7f"
+      ]
     }
   ],
   "comments": [
@@ -252,6 +798,76 @@
       "username": "Khoa",
       "text": "ok",
       "timestamp": "2025-07-02T09:27:49.391Z"
+    },
+    {
+      "id": "feb0",
+      "recipeId": "832a",
+      "username": "Khoa",
+      "text": "dasdasd",
+      "timestamp": "2025-07-07T15:55:10.261Z"
+    },
+    {
+      "id": "69b6",
+      "recipeId": "832a",
+      "username": "Khoa",
+      "text": "asass",
+      "timestamp": "2025-07-07T15:55:25.143Z"
+    },
+    {
+      "id": "840f",
+      "recipeId": null,
+      "username": "Khoa",
+      "text": "hay",
+      "timestamp": "2025-07-07T15:56:27.068Z"
+    },
+    {
+      "id": "f712",
+      "recipeId": null,
+      "username": "Khoa",
+      "text": "hau",
+      "timestamp": "2025-07-07T15:57:46.086Z"
+    },
+    {
+      "id": "5c02",
+      "recipeId": null,
+      "username": "Khoa",
+      "text": "hay",
+      "timestamp": "2025-07-07T15:57:48.657Z"
+    },
+    {
+      "id": "9c63",
+      "recipeId": null,
+      "username": "Khoa",
+      "text": "hay",
+      "timestamp": "2025-07-07T15:58:34.813Z"
+    },
+    {
+      "id": "2433",
+      "recipeId": null,
+      "username": "Khoa",
+      "text": "hay",
+      "timestamp": "2025-07-07T16:00:14.987Z"
+    },
+    {
+      "id": "f9c3",
+      "recipeId": "9b66",
+      "username": "Khoa",
+      "text": "hay",
+      "timestamp": "2025-07-07T16:01:59.070Z"
+    },
+    {
+      "id": "49b1",
+      "recipeId": "9b66",
+      "username": "Khoa",
+      "text": "hop",
+      "timestamp": "2025-07-07T16:02:03.485Z"
+    },
+    {
+      "id": "23cc",
+      "recipeId": "9b66",
+      "username": "Khoa",
+      "text": "a",
+      "timestamp": "2025-07-07T16:02:08.386Z"
     }
   ],
   "mealPlans": []

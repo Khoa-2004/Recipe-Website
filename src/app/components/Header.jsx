@@ -2,11 +2,14 @@
 
 import { useAuth } from "../contexts/AuthContext"
 import { useTheme } from "../contexts/ThemeContext"
-import { Sun, Moon, User, Plus, Calendar, Home } from "lucide-react"
+import { Sun, Moon, User, Plus, Calendar, Home, Bell } from "lucide-react"
+import { useState } from "react"
 
-export default function Header({ currentView, setCurrentView, onLogout, onAddRecipe }) {
+export default function Header({ currentView, setCurrentView, onLogout, onAddRecipe, notifications = [], onNotifClick }) {
   const { user } = useAuth()
   const { theme, toggleTheme } = useTheme()
+  const unreadCount = notifications.filter(n => !n.read).length
+  const [showNotif, setShowNotif] = useState(false)
 
   return (
     <header className="header">
@@ -43,6 +46,29 @@ export default function Header({ currentView, setCurrentView, onLogout, onAddRec
             <Plus size={20} />
             Add Recipe
           </button>
+
+          <div className="notif-bell-container">
+            <button className="notif-bell-btn" onClick={() => setShowNotif(v => !v)}>
+              <Bell size={20} />
+              {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+            </button>
+            {showNotif && (
+              <div className="notif-dropdown">
+                <h4>Notifications</h4>
+                {notifications.length === 0 ? (
+                  <div className="notif-empty">No notifications</div>
+                ) : (
+                  <ul className="notif-list">
+                    {notifications.map((notif, i) => (
+                      <li key={i} className={notif.read ? "" : "unread"}>
+                        {notif.message}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
 
           <button className="theme-toggle" onClick={toggleTheme}>
             {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}

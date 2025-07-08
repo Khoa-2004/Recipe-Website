@@ -9,24 +9,30 @@ import axios from "axios";
 
 const API_URL = "http://localhost:3001";
 
+// Helper function to limit characters
+function limitChars(str, maxChars) {
+  if (!str) return "";
+  if (str.length <= maxChars) return str;
+  return str.slice(0, maxChars) + "...";
+}
+
+// Add this function to check if all days are empty
+function isAllDaysEmpty(mealPlan, daysOfWeek, timeSlots) {
+  return daysOfWeek.every(day =>
+    timeSlots.every(slot => mealPlan[day][slot].length === 0)
+  );
+}
+
+// Add this function to check if a day is empty
+function isDayEmpty(mealPlan, day, timeSlots) {
+  return timeSlots.every(slot => mealPlan[day][slot].length === 0);
+}
+
 export default function MealPlanner() {
   const { recipes } = useRecipes();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("planner");
-  const [mealPlan, setMealPlan] = useState({
-    Monday: [],
-    Tuesday: [],
-    Wednesday: [],
-    Thursday: [],
-    Friday: [],
-    Saturday: [],
-    Sunday: [],
-  });
-  const [availableRecipes, setAvailableRecipes] = useState([]);
-  const [savedMealPlans, setSavedMealPlans] = useState([]);
-  const [showSaveModal, setShowSaveModal] = useState(false);
-  const [planName, setPlanName] = useState("");
-
+  const timeSlots = ["morning", "afternoon", "evening", "night"];
   const daysOfWeek = [
     "Monday",
     "Tuesday",
@@ -36,12 +42,31 @@ export default function MealPlanner() {
     "Saturday",
     "Sunday",
   ];
+  const initialMealPlan = daysOfWeek.reduce((acc, day) => {
+    acc[day] = timeSlots.reduce((slotAcc, slot) => {
+      slotAcc[slot] = [];
+      return slotAcc;
+    }, {});
+    return acc;
+  }, {});
+  const [mealPlan, setMealPlan] = useState(initialMealPlan);
+  const [availableRecipes, setAvailableRecipes] = useState([]);
+  const [savedMealPlans, setSavedMealPlans] = useState([]);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [planName, setPlanName] = useState("");
+  const { favorites } = useRecipes();
 
   useEffect(() => {
     const savedMealPlan = localStorage.getItem("mealPlan");
     if (savedMealPlan) setMealPlan(JSON.parse(savedMealPlan));
-    setAvailableRecipes(recipes);
-
+    // Only show available recipes that are favorited or created by the user
+    setAvailableRecipes(
+      recipes.filter(
+        (recipe) =>
+          (user && recipe.createdBy === user.username) ||
+          (favorites && favorites.includes(recipe.id))
+      )
+    );
     // Load saved meal plans
     if (user?.id) {
       axios
@@ -49,11 +74,29 @@ export default function MealPlanner() {
         .then((res) => setSavedMealPlans(res.data))
         .catch(() => setSavedMealPlans([]));
     }
-  }, [recipes, user]);
+  }, [recipes, user, favorites]);
 
   useEffect(() => {
     localStorage.setItem("mealPlan", JSON.stringify(mealPlan));
   }, [mealPlan]);
+
+  useEffect(() => {
+    // Remove recipes from meal plan that are not favorited and not created by the current user
+    setMealPlan((prev) => {
+      const newPlan = { ...prev };
+      for (const day of daysOfWeek) {
+        for (const slot of timeSlots) {
+          newPlan[day][slot] = newPlan[day][slot].filter(
+            (recipe) =>
+              // Keep if created by current user or is in favorites
+              (user && recipe.createdBy === user.username) ||
+              (favorites && favorites.includes(recipe.id))
+          );
+        }
+      }
+      return newPlan;
+    });
+  }, [favorites, recipes, user]);
 
   const saveMealPlan = () => {
     if (!planName.trim()) return;
@@ -100,60 +143,68 @@ export default function MealPlanner() {
 
   const onDragEnd = ({ destination, source, draggableId }) => {
     if (!destination) return;
-
-    const src = source.droppableId;
-    const dest = destination.droppableId;
-
-    // Parse the draggableId to get recipe info
-    let recipeId, sourceDay, sourceIndex;
-
+    const src = source.droppableId.split("|"); // e.g., "Monday|morning"
+    const dest = destination.droppableId.split("|");
+    let recipeId, sourceDay, sourceSlot, sourceIndex;
     if (draggableId.startsWith("available-")) {
-      // Dragging from available recipes
       recipeId = draggableId.replace("available-", "");
     } else {
-      // Dragging from a day - format: "day-recipeId-index"
+      // Format: "day|slot-recipeId-index"
       const parts = draggableId.split("-");
-      sourceDay = parts[0];
+      [sourceDay, sourceSlot] = parts[0].split("|");
       recipeId = parts[1];
       sourceIndex = Number(parts[2]);
     }
-
     const recipe = recipes.find((r) => r.id === recipeId);
     if (!recipe) return;
-
-    if (src === "available-recipes") {
-      // Copy from available recipes to any day
-      if (dest !== "available-recipes") {
+    if (src[0] === "available-recipes") {
+      // Copy from available recipes to any slot
+      if (dest[0] !== "available-recipes") {
         setMealPlan((prev) => ({
           ...prev,
-          [dest]: [...prev[dest], recipe],
+          [dest[0]]: {
+            ...prev[dest[0]],
+            [dest[1]]: [...prev[dest[0]][dest[1]], recipe],
+          },
         }));
       }
-    } else if (dest === "available-recipes") {
-      // Remove from a day when dragged back to available recipes
+    } else if (dest[0] === "available-recipes") {
+      // Remove from a slot when dragged back to available recipes
       setMealPlan((prev) => ({
         ...prev,
-        [src]: prev[src].filter((_, i) => i !== source.index),
+        [src[0]]: {
+          ...prev[src[0]],
+          [src[1]]: prev[src[0]][src[1]].filter((_, i) => i !== source.index),
+        },
       }));
-    } else if (src !== dest) {
-      // Copy between different days
+    } else if (src[0] !== dest[0] || src[1] !== dest[1]) {
+      // Copy between different slots
       setMealPlan((prev) => ({
         ...prev,
-        [dest]: [...prev[dest], recipe],
+        [dest[0]]: {
+          ...prev[dest[0]],
+          [dest[1]]: [...prev[dest[0]][dest[1]], recipe],
+        },
       }));
     } else {
-      // Reorder within the same day
+      // Reorder within the same slot
       setMealPlan((prev) => {
-        const list = [...prev[src]];
+        const list = [...prev[src[0]][src[1]]];
         const [moved] = list.splice(source.index, 1);
         list.splice(destination.index, 0, moved);
-        return { ...prev, [src]: list };
+        return {
+          ...prev,
+          [src[0]]: {
+            ...prev[src[0]],
+            [src[1]]: list,
+          },
+        };
       });
     }
   };
 
-  const calculateDayNutrition = (dayRecipes) => {
-    return dayRecipes.reduce(
+  const calculateSlotNutrition = (slotRecipes) => {
+    return slotRecipes.reduce(
       (total, recipe) => ({
         calories: total.calories + recipe.nutritionalInfo.calories,
         protein: total.protein + recipe.nutritionalInfo.protein,
@@ -164,9 +215,23 @@ export default function MealPlanner() {
     );
   };
 
+  const calculateDayNutrition = (daySlots) => {
+    return timeSlots.reduce(
+      (dayTotal, slot) => {
+        const slotNutrition = calculateSlotNutrition(daySlots[slot]);
+        return {
+          calories: dayTotal.calories + slotNutrition.calories,
+          protein: dayTotal.protein + slotNutrition.protein,
+          fat: dayTotal.fat + slotNutrition.fat,
+          carbs: dayTotal.carbs + slotNutrition.carbs,
+        };
+      },
+      { calories: 0, protein: 0, fat: 0, carbs: 0 }
+    );
+  };
+
   const calculateWeekNutrition = () => {
     const weekTotal = { calories: 0, protein: 0, fat: 0, carbs: 0 };
-
     daysOfWeek.forEach((day) => {
       const dayNutrition = calculateDayNutrition(mealPlan[day]);
       weekTotal.calories += dayNutrition.calories;
@@ -174,7 +239,6 @@ export default function MealPlanner() {
       weekTotal.fat += dayNutrition.fat;
       weekTotal.carbs += dayNutrition.carbs;
     });
-
     return weekTotal;
   };
 
@@ -271,7 +335,7 @@ export default function MealPlanner() {
                             }`}
                           >
                             <div className="recipe-info">
-                              <h4>{recipe.title}</h4>
+                              <h4>{limitChars(recipe.title, 50)}</h4>
                               <p>
                                 {recipe.category} • {recipe.cookingTime} min
                               </p>
@@ -287,10 +351,19 @@ export default function MealPlanner() {
             </div>
 
             <div className="calendar-section">
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.5rem' }}>
+                <button
+                  className="clear-all-days-btn"
+                  onClick={() => setMealPlan(initialMealPlan)}
+                  disabled={isAllDaysEmpty(mealPlan, daysOfWeek, timeSlots)}
+                  title="Clear all recipes for all days"
+                >
+                  Clear All Days
+                </button>
+              </div>
               <div className="calendar-grid">
                 {daysOfWeek.map((day) => {
                   const dayNutrition = calculateDayNutrition(mealPlan[day]);
-
                   return (
                     <div key={day} className="day-column">
                       <div className="day-header">
@@ -298,81 +371,102 @@ export default function MealPlanner() {
                         <div className="day-nutrition">
                           <small>{dayNutrition.calories} cal</small>
                         </div>
-                      </div>
-
-                      <div className="day-content">
-                        <Droppable
-                          droppableId={String(day)}
-                          isDropDisabled={false}
-                          isCombineEnabled={false}
-                          ignoreContainerClipping={false}
-                        >
-                          {(provided, snapshot) => (
-                            <div
-                              {...provided.droppableProps}
-                              ref={provided.innerRef}
-                              className={`day-recipes ${
-                                snapshot.isDraggingOver ? "drag-over" : ""
-                              }`}
-                            >
-                              {mealPlan[day].map((recipe, index) => (
-                                <Draggable
-                                  key={`${day}-${recipe.id}-${index}`}
-                                  draggableId={`${day}-${recipe.id}-${index}`}
-                                  index={index}
-                                >
-                                  {(provided, snapshot) => (
-                                    <div
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      className={`planned-recipe ${
-                                        snapshot.isDragging ? "dragging" : ""
-                                      }`}
-                                    >
-                                      <h4>{recipe.title}</h4>
-                                      <p>{recipe.category}</p>
-                                      <small>
-                                        {recipe.nutritionalInfo.calories} cal
-                                      </small>
-                                      <button
-                                        className="remove-recipe-btn"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setMealPlan((prev) => ({
-                                            ...prev,
-                                            [day]: prev[day].filter(
-                                              (_, i) => i !== index
-                                            ),
-                                          }));
-                                        }}
-                                      >
-                                        ×
-                                      </button>
-                                    </div>
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                              {mealPlan[day].length === 0 && (
-                                <div className="empty-day">
-                                  Drag recipes here
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </Droppable>
-
                         <button
                           className="clear-day-btn-small"
                           onClick={() =>
-                            setMealPlan((prev) => ({ ...prev, [day]: [] }))
+                            setMealPlan((prev) => ({
+                              ...prev,
+                              [day]: timeSlots.reduce((acc, slot) => {
+                                acc[slot] = [];
+                                return acc;
+                              }, {}),
+                            }))
                           }
-                          disabled={mealPlan[day].length === 0}
-                          title="Clear all recipes for this day"
+                          disabled={isDayEmpty(mealPlan, day, timeSlots)}
+                          title={`Clear all recipes for ${day}`}
+                          style={{ marginLeft: '0.5rem' }}
                         >
-                          Clear
+                          Clear All
                         </button>
+                      </div>
+                      <div className="day-content">
+                        {timeSlots.map((slot) => (
+                          <div key={slot} className="slot-section">
+                            <div className="slot-header">
+                              <strong>{slot.charAt(0).toUpperCase() + slot.slice(1)}</strong>
+                            </div>
+                            <Droppable
+                              droppableId={`${day}|${slot}`}
+                              isDropDisabled={false}
+                              isCombineEnabled={false}
+                              ignoreContainerClipping={false}
+                            >
+                              {(provided, snapshot) => (
+                                <div
+                                  {...provided.droppableProps}
+                                  ref={provided.innerRef}
+                                  className={`slot-recipes ${snapshot.isDraggingOver ? "drag-over" : ""}`}
+                                >
+                                  {mealPlan[day][slot].map((recipe, index) => (
+                                    <Draggable
+                                      key={`${day}|${slot}-${recipe.id}-${index}`}
+                                      draggableId={`${day}|${slot}-${recipe.id}-${index}`}
+                                      index={index}
+                                    >
+                                      {(provided, snapshot) => (
+                                        <div
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          className={`planned-recipe ${snapshot.isDragging ? "dragging" : ""}`}
+                                        >
+                                          <h4>{limitChars(recipe.title, 50)}</h4>
+                                          <p>{recipe.category}</p>
+                                          <small>{recipe.nutritionalInfo.calories} cal</small>
+                                          <button
+                                            className="remove-recipe-btn"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setMealPlan((prev) => ({
+                                                ...prev,
+                                                [day]: {
+                                                  ...prev[day],
+                                                  [slot]: prev[day][slot].filter((_, i) => i !== index),
+                                                },
+                                              }));
+                                            }}
+                                          >
+                                            ×
+                                          </button>
+                                        </div>
+                                      )}
+                                    </Draggable>
+                                  ))}
+                                  {provided.placeholder}
+                                  {mealPlan[day][slot].length === 0 && (
+                                    <div className="empty-slot">Drag recipes here</div>
+                                  )}
+                                </div>
+                              )}
+                            </Droppable>
+                            <button
+                              className="clear-slot-btn-small"
+                              onClick={() =>
+                                setMealPlan((prev) => ({
+                                  ...prev,
+                                  [day]: {
+                                    ...prev[day],
+                                    [slot]: [],
+                                  },
+                                }))
+                              }
+                              disabled={mealPlan[day][slot].length === 0}
+                              title={`Clear all recipes for ${slot}`}
+                            >
+                              Clear
+                            </button>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   );

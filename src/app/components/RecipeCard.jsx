@@ -53,6 +53,13 @@ export default function RecipeCard({ recipe, onClick }) {
     ))
   }
 
+  // Helper to calculate average rating
+  const getAverageRating = (ratings) => {
+    if (!ratings || ratings.length === 0) return 0;
+    const sum = ratings.reduce((acc, curr) => acc + curr.rating, 0);
+    return sum / ratings.length;
+  }
+
   return (
     <div className="recipe-card" onClick={onClick}>
       <div className="recipe-image">
@@ -84,8 +91,8 @@ export default function RecipeCard({ recipe, onClick }) {
             <span>{recipe.servings} servings</span>
           </div>
           <div className="meta-item rating">
-            {renderStars(recipe.rating)}
-            <span>({recipe.rating})</span>
+            {renderStars(getAverageRating(recipe.ratings))}
+            <span>({getAverageRating(recipe.ratings).toFixed(2)})</span>
           </div>
         </div>
       </div>

@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { useAuth } from "../contexts/AuthContext"
 import DietaryPreferencesModal from "./DietaryPreferencesModal"
+import { useTheme } from "../contexts/ThemeContext"
+import { Sun, Moon } from "lucide-react"
 
 export default function LoginForm({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true)
@@ -17,6 +19,7 @@ export default function LoginForm({ onLogin }) {
   const [pendingUser, setPendingUser] = useState(null)
   const { login, register, updateProfile } = useAuth()
   const [loading, setLoading] = useState(false)
+  const { theme, toggleTheme } = useTheme()
 
   const validateForm = () => {
     const newErrors = {}
@@ -103,6 +106,14 @@ export default function LoginForm({ onLogin }) {
     <>
       <div className="login-container">
         <div className="login-form">
+          <button
+            className="theme-toggle"
+            onClick={toggleTheme}
+            style={{ position: 'absolute', top: 24, right: 24, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', zIndex: 2 }}
+            title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+          >
+            {theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}
+          </button>
           <h2>{isLogin ? "Login" : "Create Account"}</h2>
           {errors.general && <div className="error-message">{errors.general}</div>}
           <form onSubmit={handleSubmit}>

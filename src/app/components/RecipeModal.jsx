@@ -1,24 +1,42 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRecipes } from "../contexts/RecipeContext"
 import { useAuth } from "../contexts/AuthContext"
 import { X, Star, Clock, Users, Edit, Trash2, Share2, Copy } from "lucide-react"
 import RecipeForm from "./RecipeForm"
+import { v4 as uuidv4 } from 'uuid';
 
-export default function RecipeModal({ recipe, onClose }) {
-  const { addComment, rateRecipe, deleteRecipe } = useRecipes()
+export default function RecipeModal({ recipe: initialRecipe, onClose }) {
+  const { addComment, rateRecipe, deleteRecipe, recipes, deleteComment } = useRecipes()
   const { user } = useAuth()
   const [showEditForm, setShowEditForm] = useState(false)
   const [comment, setComment] = useState("")
   const [userRating, setUserRating] = useState(0)
   const [showShareMenu, setShowShareMenu] = useState(false)
+  const [recipe, setRecipe] = useState(initialRecipe)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [notification, setNotification] = useState({ message: "", type: "" })
+
+  // Sync modal recipe with global state after rating changes
+  useEffect(() => {
+    const updated = recipes.find(r => r.id === recipe.id)
+    if (updated) setRecipe(updated)
+  }, [recipes, recipe.id])
+
+  useEffect(() => {
+    // Set user's own rating if available
+    if (recipe.ratings && user) {
+      const found = recipe.ratings.find(r => r.userId === (user.id || user.username));
+      setUserRating(found ? found.rating : 0);
+    }
+  }, [recipe.ratings, user]);
 
   const handleCommentSubmit = (e) => {
     e.preventDefault()
     if (comment.trim()) {
       const newComment = {
-        id: Date.now(),
+        id: uuidv4(),
         username: user.username,
         text: comment.trim(),
         timestamp: new Date().toISOString(),
@@ -34,15 +52,24 @@ export default function RecipeModal({ recipe, onClose }) {
   const handleRatingClick = (rating) => {
     setUserRating(rating)
     rateRecipe(recipe.id, rating)
-    // Update the recipe object immediately for real-time display
-    recipe.rating = rating
   }
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this recipe?")) {
-      deleteRecipe(recipe.id)
+    setShowDeleteConfirm(true)
+  }
+
+  const confirmDelete = () => {
+    deleteRecipe(recipe.id)
+    setShowDeleteConfirm(false)
+    setNotification({ message: "Recipe deleted successfully!", type: "success" })
+    setTimeout(() => {
+      setNotification({ message: "", type: "" })
       onClose()
-    }
+    }, 2000)
+  }
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false)
   }
 
   const handleShareClick = () => {
@@ -94,6 +121,13 @@ export default function RecipeModal({ recipe, onClose }) {
     }
   }
 
+  // Helper to calculate average rating
+  const getAverageRating = (ratings) => {
+    if (!ratings || ratings.length === 0) return 0;
+    const sum = ratings.reduce((acc, curr) => acc + curr.rating, 0);
+    return sum / ratings.length;
+  }
+
   const renderStars = (rating, interactive = false) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -112,6 +146,24 @@ export default function RecipeModal({ recipe, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        {/* Notification Toast */}
+        {notification.message && (
+          <div className={`notification-toast ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
+        {/* Custom Delete Confirmation Modal */}
+        {showDeleteConfirm && (
+          <div className="delete-confirm-modal">
+            <div className="delete-confirm-content">
+              <h3>Are you sure you want to delete this recipe?</h3>
+              <div className="delete-confirm-actions">
+                <button className="delete-btn" onClick={confirmDelete}>Yes</button>
+                <button className="cancel-btn" onClick={cancelDelete}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="modal-header">
           <h2>{recipe.title}</h2>
           <div className="modal-actions">
@@ -149,10 +201,6 @@ export default function RecipeModal({ recipe, onClose }) {
         </div>
 
         <div className="modal-body">
-          <div className="recipe-image-large">
-            <img src={`/placeholder.svg?height=300&width=500`} alt={recipe.title} />
-          </div>
-
           <div className="recipe-details">
             <p className="recipe-description">{recipe.description}</p>
 
@@ -177,10 +225,11 @@ export default function RecipeModal({ recipe, onClose }) {
                 <span className="rating-text">Click to rate</span>
               </div>
               <div className="current-rating">
-                <span>Current rating: </span>
+                <span>Average rating: </span>
                 <div className="rating-display">
-                  {renderStars(recipe.rating)}
-                  <span className="rating-number">({recipe.rating.toFixed(1)})</span>
+                  {renderStars(getAverageRating(recipe.ratings))}
+                  <span className="rating-number">({getAverageRating(recipe.ratings).toFixed(2)})</span>
+                  <span className="rating-count">&nbsp;•&nbsp;{recipe.ratings ? recipe.ratings.length : 0} rating{recipe.ratings && recipe.ratings.length === 1 ? '' : 's'}</span>
                 </div>
               </div>
             </div>
@@ -230,16 +279,20 @@ export default function RecipeModal({ recipe, onClose }) {
             <div className="comments-section">
               <h3>Comments ({recipe.comments.length})</h3>
 
-              <form onSubmit={handleCommentSubmit} className="comment-form">
+              <form onSubmit={handleCommentSubmit} className="comment-form pretty-comment-form">
+                <div className="comment-form-avatar">
+                  <span className="avatar-circle">{user?.username?.[0]?.toUpperCase() || '?'}</span>
+                </div>
                 <textarea
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Share your thoughts about this recipe..."
                   maxLength={500}
                   rows={3}
+                  className="pretty-textarea"
                 />
-                <button type="submit" disabled={!comment.trim()}>
-                  Add Comment
+                <button type="submit" className="pretty-comment-btn" disabled={!comment.trim()}>
+                  <span>💬</span> Add Comment
                 </button>
               </form>
 
@@ -249,6 +302,16 @@ export default function RecipeModal({ recipe, onClose }) {
                     <div className="comment-header">
                       <strong>{comment.username}</strong>
                       <span className="comment-date">{new Date(comment.timestamp).toLocaleDateString()}</span>
+                      {user?.username === comment.username && (
+                        <button
+                          className="comment-delete-btn"
+                          title="Delete comment"
+                          onClick={() => deleteComment(recipe.id, comment.id)}
+                          style={{ marginLeft: 8, background: 'none', border: 'none', color: '#d11a2a', cursor: 'pointer', fontSize: '1.1em' }}
+                        >
+                          🗑️
+                        </button>
+                      )}
                     </div>
                     <p className="comment-text">{comment.text}</p>
                   </div>

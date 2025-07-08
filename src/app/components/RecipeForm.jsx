@@ -10,6 +10,9 @@ export default function RecipeForm({ recipe, onClose }) {
   const { user } = useAuth()
   const isEditing = !!recipe
 
+  // Notification state
+  const [notification, setNotification] = useState({ message: "", type: "" })
+
   const [formData, setFormData] = useState({
     title: recipe?.title || "",
     description: recipe?.description || "",
@@ -51,11 +54,11 @@ export default function RecipeForm({ recipe, onClose }) {
     }
 
     if (!formData.cookingTime || formData.cookingTime <= 0) {
-      newErrors.cookingTime = "Cooking time must be greater than 0"
+      newErrors.cookingTime = formData.cookingTime < 0 ? "Invalid numbers" : "Cooking time must be greater than 0"
     }
 
     if (!formData.servings || formData.servings <= 0) {
-      newErrors.servings = "Servings must be greater than 0"
+      newErrors.servings = formData.servings < 0 ? "Invalid numbers" : "Servings must be greater than 0"
     }
 
     if (formData.ingredients.filter((ing) => ing.trim()).length === 0) {
@@ -65,6 +68,13 @@ export default function RecipeForm({ recipe, onClose }) {
     if (!formData.instructions.trim()) {
       newErrors.instructions = "Instructions are required"
     }
+
+    // Nutrition fields
+    const nut = formData.nutritionalInfo;
+    if (nut.calories && Number(nut.calories) < 0) newErrors.calories = "Invalid numbers";
+    if (nut.protein && Number(nut.protein) < 0) newErrors.protein = "Invalid numbers";
+    if (nut.fat && Number(nut.fat) < 0) newErrors.fat = "Invalid numbers";
+    if (nut.carbs && Number(nut.carbs) < 0) newErrors.carbs = "Invalid numbers";
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -91,11 +101,16 @@ export default function RecipeForm({ recipe, onClose }) {
 
     if (isEditing) {
       updateRecipe(recipe.id, recipeData)
+      setNotification({ message: "Recipe updated successfully!", type: "success" })
     } else {
       addRecipe(recipeData)
+      setNotification({ message: "Recipe uploaded successfully!", type: "success" })
     }
 
-    onClose()
+    setTimeout(() => {
+      setNotification({ message: "", type: "" })
+      onClose()
+    }, 2000)
   }
 
   const handleInputChange = (e) => {
@@ -163,6 +178,12 @@ export default function RecipeForm({ recipe, onClose }) {
             <X size={24} />
           </button>
         </div>
+
+        {notification.message && (
+          <div className={`notification-toast ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="recipe-form-enhanced">
           <div className="form-group">
@@ -306,7 +327,9 @@ export default function RecipeForm({ recipe, onClose }) {
                   value={formData.nutritionalInfo.calories}
                   onChange={handleNutritionChange}
                   min="0"
+                  className={errors.calories ? "error" : ""}
                 />
+                {errors.calories && <span className="error-text">{errors.calories}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="protein">Protein (g)</label>
@@ -317,7 +340,9 @@ export default function RecipeForm({ recipe, onClose }) {
                   value={formData.nutritionalInfo.protein}
                   onChange={handleNutritionChange}
                   min="0"
+                  className={errors.protein ? "error" : ""}
                 />
+                {errors.protein && <span className="error-text">{errors.protein}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="fat">Fat (g)</label>
@@ -328,7 +353,9 @@ export default function RecipeForm({ recipe, onClose }) {
                   value={formData.nutritionalInfo.fat}
                   onChange={handleNutritionChange}
                   min="0"
+                  className={errors.fat ? "error" : ""}
                 />
+                {errors.fat && <span className="error-text">{errors.fat}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="carbs">Carbs (g)</label>
@@ -339,7 +366,9 @@ export default function RecipeForm({ recipe, onClose }) {
                   value={formData.nutritionalInfo.carbs}
                   onChange={handleNutritionChange}
                   min="0"
+                  className={errors.carbs ? "error" : ""}
                 />
+                {errors.carbs && <span className="error-text">{errors.carbs}</span>}
               </div>
             </div>
           </div>

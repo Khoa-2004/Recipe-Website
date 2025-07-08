@@ -25,10 +25,10 @@ export default function RecipeSuggestions({ onRecipeClick }) {
     if (filterCategory && filterCategory !== "All") {
       filtered = filtered.filter((recipe) => recipe.category === filterCategory);
     }
-    // Sort by rating, high to low
+    // Sort by average rating, high to low
     const suggestions = filtered
       .slice()
-      .sort((a, b) => b.rating - a.rating)
+      .sort((a, b) => getAverageRating(b.ratings) - getAverageRating(a.ratings))
       .slice(0, 5);
     setSuggestedRecipes(suggestions);
   }
@@ -36,10 +36,10 @@ export default function RecipeSuggestions({ onRecipeClick }) {
   const generateTrendingRecipes = () => {
     if (!recipes.length) return
 
-    // Trending: sort all recipes by rating (descending), top 5
+    // Trending: sort all recipes by average rating (descending), top 5
     const trending = recipes
       .slice()
-      .sort((a, b) => b.rating - a.rating)
+      .sort((a, b) => getAverageRating(b.ratings) - getAverageRating(a.ratings))
       .slice(0, 5)
 
     setTrendingRecipes(trending)
@@ -72,8 +72,8 @@ export default function RecipeSuggestions({ onRecipeClick }) {
   const calculateRecipeScore = (recipe, preferences) => {
     let score = 0
 
-    // Base score from rating
-    score += recipe.rating * 10
+    // Base score from average rating
+    score += getAverageRating(recipe.ratings) * 10
 
     // Boost for favorite categories
     if (preferences.favoriteCategories.includes(recipe.category)) {
@@ -125,7 +125,7 @@ export default function RecipeSuggestions({ onRecipeClick }) {
     let score = 0
 
     // Rating weight (40%)
-    score += recipe.rating * 20
+    score += getAverageRating(recipe.ratings) * 20
 
     // Comments weight (30%)
     score += recipe.comments.length * 10
@@ -136,7 +136,7 @@ export default function RecipeSuggestions({ onRecipeClick }) {
     score += recencyScore
 
     // Engagement rate (10%) - recipes with high rating and comments
-    if (recipe.rating > 4 && recipe.comments.length > 2) {
+    if (getAverageRating(recipe.ratings) > 4 && recipe.comments.length > 2) {
       score += 15
     }
 
@@ -189,6 +189,13 @@ export default function RecipeSuggestions({ onRecipeClick }) {
     return tagMap[tagId] || "🏷️"
   }
 
+  // Helper to calculate average rating
+  const getAverageRating = (ratings) => {
+    if (!ratings || ratings.length === 0) return 0;
+    const sum = ratings.reduce((acc, curr) => acc + curr.rating, 0);
+    return sum / ratings.length;
+  };
+
   const SuggestionCard = ({ recipe, isTrending = false }) => (
     <div className={`suggestion-card ${isTrending ? "trending-card" : ""}`} onClick={() => trackRecipeView(recipe)}>
       {isTrending && (
@@ -236,8 +243,8 @@ export default function RecipeSuggestions({ onRecipeClick }) {
             <span>{recipe.servings}</span>
           </div>
           <div className="meta-item rating">
-            {renderStars(recipe.rating)}
-            <span>({recipe.rating})</span>
+            {renderStars(getAverageRating(recipe.ratings))}
+            <span>({getAverageRating(recipe.ratings).toFixed(2)})</span>
           </div>
         </div>
 

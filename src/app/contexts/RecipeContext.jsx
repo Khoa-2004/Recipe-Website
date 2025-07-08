@@ -26,16 +26,27 @@ export const RecipeProvider = ({ children }) => {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`${API_URL}/recipes`)
-      .then(response => {
-        setRecipes(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        setLoading(false);
-        // Optionally fallback to localStorage or show error
-        console.error("Failed to fetch recipes", error);
-      });
+    let isMounted = true;
+    const fetchRecipes = () => {
+      axios.get(`${API_URL}/recipes`)
+        .then(response => {
+          if (isMounted) {
+            setRecipes(response.data);
+            setLoading(false);
+          }
+        })
+        .catch(error => {
+          setLoading(false);
+          // Optionally fallback to localStorage or show error
+          console.error("Failed to fetch recipes", error);
+        });
+    };
+    fetchRecipes();
+    const interval = setInterval(fetchRecipes, 5000); // Poll every 5 seconds
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -114,28 +125,11 @@ export const RecipeProvider = ({ children }) => {
   }
 
   const addComment = async (recipeId, comment) => {
-    // Save comment in comments DB
-    try {
-      await axios.post(`${API_URL}/comments`, {
-        recipeId,
-        username: comment.username,
-        text: comment.text,
-        timestamp: comment.timestamp,
-      });
-    } catch (error) {
-      console.error("Failed to save comment in comments DB", error);
-    }
-
-    // Optionally, also update the recipe's comments array for immediate UI update
     const recipe = recipes.find((r) => r.id === recipeId);
     if (!recipe) return;
     const updatedComments = [
       ...recipe.comments,
-      {
-        id: Date.now(),
-        ...comment,
-        timestamp: new Date().toISOString(),
-      },
+      comment, // already has id, username, text, timestamp
     ];
     try {
       const response = await axios.patch(`${API_URL}/recipes/${recipeId}`, { comments: updatedComments });
@@ -145,12 +139,40 @@ export const RecipeProvider = ({ children }) => {
     }
   };
 
+  // Helper to calculate average rating
+  function getAverageRating(ratings) {
+    if (!ratings || ratings.length === 0) return 0;
+    const sum = ratings.reduce((acc, curr) => acc + curr.rating, 0);
+    return sum / ratings.length;
+  }
+
   const rateRecipe = async (recipeId, rating) => {
+    if (!user) {
+      alert("You must be logged in to rate recipes.");
+      return;
+    }
+    const recipe = recipes.find(r => r.id === recipeId);
+    if (!recipe) return;
+    let updatedRatings = Array.isArray(recipe.ratings) ? [...recipe.ratings] : [];
+    const userId = user.id || user.username;
+    const existing = updatedRatings.find(r => r.userId === userId);
+    if (existing) {
+      existing.rating = rating;
+    } else {
+      updatedRatings.push({ userId, rating });
+    }
+    // Optimistically update UI
+    const newRecipe = { ...recipe, ratings: updatedRatings, rating: getAverageRating(updatedRatings) };
+    setRecipes(prev => prev.map(r => r.id === recipeId ? newRecipe : r));
+    // PATCH the updated ratings array
     try {
-      const response = await axios.patch(`${API_URL}/recipes/${recipeId}`, { rating });
-      setRecipes(prev => prev.map(r => r.id === recipeId ? response.data : r));
+      const response = await axios.patch(`${API_URL}/recipes/${recipeId}`, { ratings: updatedRatings });
+      setRecipes(prev => prev.map(r => r.id === recipeId ? { ...response.data, rating: getAverageRating(response.data.ratings) } : r));
     } catch (error) {
+      // Revert optimistic update if error
+      setRecipes(prev => prev.map(r => r.id === recipeId ? recipe : r));
       console.error("Failed to rate recipe", error);
+      alert("Failed to save your rating. Please try again.");
     }
   }
 
@@ -162,7 +184,10 @@ export const RecipeProvider = ({ children }) => {
   }
 
   const getFilteredRecipes = () => {
-    let filtered = recipes
+    let filtered = recipes.map(recipe => ({
+      ...recipe,
+      rating: getAverageRating(recipe.ratings)
+    }));
 
     // Search filter
     if (searchTerm) {
@@ -202,6 +227,18 @@ export const RecipeProvider = ({ children }) => {
     return filtered
   }
 
+  const deleteComment = async (recipeId, commentId) => {
+    const recipe = recipes.find(r => r.id === recipeId);
+    if (!recipe) return;
+    const updatedComments = recipe.comments.filter(c => c.id !== commentId);
+    try {
+      const response = await axios.patch(`${API_URL}/recipes/${recipeId}`, { comments: updatedComments });
+      setRecipes(prev => prev.map(r => r.id === recipeId ? response.data : r));
+    } catch (error) {
+      console.error("Failed to delete comment", error);
+    }
+  }
+
   return (
     <RecipeContext.Provider
       value={{
@@ -221,6 +258,7 @@ export const RecipeProvider = ({ children }) => {
         addComment,
         rateRecipe,
         getFilteredRecipes,
+        deleteComment,
       }}
     >
       {children}
