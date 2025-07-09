@@ -95,30 +95,6 @@
       ],
       "comments": [
         {
-          "id": "5d28594e-7c27-45eb-9b95-73dedd3957c4",
-          "username": "Khoa",
-          "text": "hay",
-          "timestamp": "2025-07-07T15:56:27.068Z"
-        },
-        {
-          "id": "a1b2c3d4-1111-2222-3333-444455556666",
-          "username": "Khoa",
-          "text": "hay",
-          "timestamp": "2025-07-07T15:56:27.086Z"
-        },
-        {
-          "id": "6107467c-ae7f-4350-b8df-beedeec953e9",
-          "username": "Khoa",
-          "text": "hau",
-          "timestamp": "2025-07-07T15:57:46.086Z"
-        },
-        {
-          "id": "b2c3d4e5-7777-8888-9999-aaaabbbbcccc",
-          "username": "Khoa",
-          "text": "hau",
-          "timestamp": "2025-07-07T15:57:46.098Z"
-        },
-        {
           "id": "9e1a8742-d4df-4a5c-917e-d29f7500df54",
           "username": "Khoa",
           "text": "hay",
@@ -671,6 +647,12 @@
           "username": "sybau",
           "text": "foooood",
           "timestamp": "2025-07-08T11:18:10.183Z"
+        },
+        {
+          "id": "692e24e7-d5a1-4978-b567-f9d8ad7ecb93",
+          "username": "Khoa",
+          "text": "adas",
+          "timestamp": "2025-07-09T07:21:13.695Z"
         }
       ],
       "ratings": [
@@ -752,12 +734,13 @@
       "createdAt": "2025-07-02T09:14:41.833Z",
       "favorites": [
         "9c6b",
-        "b1ca",
         "a1e7",
-        "229b",
         "4d43",
         "5ce2",
-        "7e7f"
+        "7e7f",
+        "229b",
+        "b1ca",
+        "d5c3"
       ]
     },
     {

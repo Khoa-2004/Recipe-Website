@@ -5,6 +5,17 @@ import { useRecipes } from "../contexts/RecipeContext"
 import { useAuth } from "../contexts/AuthContext"
 import { ChevronLeft, ChevronRight, TrendingUp, Heart, Star, Clock, Users } from "lucide-react"
 
+function chunkAndPad(arr, size) {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += size) {
+    const chunk = arr.slice(i, i + size);
+    while (chunk.length < size) chunk.push(null);
+    chunks.push(chunk);
+  }
+  if (chunks.length === 0) chunks.push([null, null, null]);
+  return chunks;
+}
+
 export default function RecipeSuggestions({ onRecipeClick }) {
   const { recipes, favorites, filterCategory } = useRecipes()
   const { user } = useAuth()
@@ -28,8 +39,7 @@ export default function RecipeSuggestions({ onRecipeClick }) {
     // Sort by average rating, high to low
     const suggestions = filtered
       .slice()
-      .sort((a, b) => getAverageRating(b.ratings) - getAverageRating(a.ratings))
-      .slice(0, 5);
+      .sort((a, b) => getAverageRating(b.ratings) - getAverageRating(a.ratings)); // Remove .slice(0, 5)
     setSuggestedRecipes(suggestions);
   }
 
@@ -154,20 +164,18 @@ export default function RecipeSuggestions({ onRecipeClick }) {
   }
 
   const nextSuggestion = () => {
-    setCurrentSuggestionIndex((prev) => (prev + 1 >= suggestedRecipes.length - 2 ? 0 : prev + 1))
-  }
-
+    setCurrentSuggestionIndex((prev) => (prev + 1 < suggestionChunks.length ? prev + 1 : 0));
+  };
   const prevSuggestion = () => {
-    setCurrentSuggestionIndex((prev) => (prev - 1 < 0 ? Math.max(0, suggestedRecipes.length - 3) : prev - 1))
-  }
+    setCurrentSuggestionIndex((prev) => (prev - 1 >= 0 ? prev - 1 : suggestionChunks.length - 1));
+  };
 
   const nextTrending = () => {
-    setCurrentTrendingIndex((prev) => (prev + 1 >= trendingRecipes.length - 2 ? 0 : prev + 1))
-  }
-
+    setCurrentTrendingIndex((prev) => (prev + 1 < trendingPages ? prev + 1 : 0));
+  };
   const prevTrending = () => {
-    setCurrentTrendingIndex((prev) => (prev - 1 < 0 ? Math.max(0, trendingRecipes.length - 3) : prev - 1))
-  }
+    setCurrentTrendingIndex((prev) => (prev - 1 >= 0 ? prev - 1 : trendingPages - 1));
+  };
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -196,78 +204,88 @@ export default function RecipeSuggestions({ onRecipeClick }) {
     return sum / ratings.length;
   };
 
-  const SuggestionCard = ({ recipe, isTrending = false }) => (
-    <div className={`suggestion-card ${isTrending ? "trending-card" : ""}`} onClick={() => trackRecipeView(recipe)}>
-      {isTrending && (
-        <div className="trending-badge">
-          <TrendingUp size={12} />
-          Trending
+  const SuggestionCard = ({ recipe, isTrending = false }) => {
+    const { favorites, toggleFavorite } = useRecipes();
+    if (!recipe) return <div className="suggestion-card empty-card" />;
+    const isFavorite = favorites.includes(recipe.id);
+    const handleFavoriteClick = (e) => {
+      e.stopPropagation();
+      toggleFavorite(recipe.id);
+    };
+    return (
+      <div className={`suggestion-card ${isTrending ? "trending-card" : ""}`} onClick={() => trackRecipeView(recipe)}>
+        {isTrending && (
+          <div className="trending-badge">
+            <TrendingUp size={12} />
+            Trending
+          </div>
+        )}
+        <div className="suggestion-image">
+          <img src={recipe.imageUrl || `/placeholder.svg?height=120&width=200`} alt={recipe.title} />
+          <button
+            className={`favorite-btn ${isFavorite ? "favorited" : ""}`}
+            onClick={handleFavoriteClick}
+            title={isFavorite ? "Unfavorite" : "Favorite"}
+            style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}
+          >
+            <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} />
+          </button>
         </div>
-      )}
-
-      <div className="suggestion-image">
-        <img src={recipe.imageUrl || `/placeholder.svg?height=120&width=200`} alt={recipe.title} />
-        {favorites.includes(recipe.id) && (
-          <div className="favorite-indicator">
-            <Heart size={14} fill="currentColor" />
+        <div className="suggestion-content">
+          <div className="suggestion-category">{recipe.category}</div>
+          <h4 className="suggestion-title">{recipe.title}</h4>
+          <p className="suggestion-description">{recipe.description}</p>
+          {/* Dietary Tags Display */}
+          {recipe.dietaryTags && recipe.dietaryTags.length > 0 && (
+            <div className="suggestion-dietary-tags">
+              {recipe.dietaryTags.slice(0, 3).map((tag) => (
+                <span key={tag} className="dietary-tag-mini" title={tag.replace("-", " ")}>
+                  {getDietaryTagIcon(tag)}
+                </span>
+              ))}
+              {recipe.dietaryTags.length > 3 && (
+                <span className="dietary-tag-more">+{recipe.dietaryTags.length - 3}</span>
+              )}
+            </div>
+          )}
+          <div className="suggestion-meta">
+            <div className="meta-item">
+              <Clock size={12} />
+              <span>{recipe.cookingTime}m</span>
+            </div>
+            <div className="meta-item">
+              <Users size={12} />
+              <span>{recipe.servings}</span>
+            </div>
+            <div className="meta-item rating">
+              {renderStars(getAverageRating(recipe.ratings))}
+              <span>({getAverageRating(recipe.ratings).toFixed(2)})</span>
+            </div>
           </div>
-        )}
-      </div>
-
-      <div className="suggestion-content">
-        <div className="suggestion-category">{recipe.category}</div>
-        <h4 className="suggestion-title">{recipe.title}</h4>
-        <p className="suggestion-description">{recipe.description}</p>
-
-        {/* Dietary Tags Display */}
-        {recipe.dietaryTags && recipe.dietaryTags.length > 0 && (
-          <div className="suggestion-dietary-tags">
-            {recipe.dietaryTags.slice(0, 3).map((tag) => (
-              <span key={tag} className="dietary-tag-mini" title={tag.replace("-", " ")}>
-                {getDietaryTagIcon(tag)}
-              </span>
-            ))}
-            {recipe.dietaryTags.length > 3 && (
-              <span className="dietary-tag-more">+{recipe.dietaryTags.length - 3}</span>
-            )}
-          </div>
-        )}
-
-        <div className="suggestion-meta">
-          <div className="meta-item">
-            <Clock size={12} />
-            <span>{recipe.cookingTime}m</span>
-          </div>
-          <div className="meta-item">
-            <Users size={12} />
-            <span>{recipe.servings}</span>
-          </div>
-          <div className="meta-item rating">
-            {renderStars(getAverageRating(recipe.ratings))}
-            <span>({getAverageRating(recipe.ratings).toFixed(2)})</span>
-          </div>
+          {recipe.comments.length > 0 && (
+            <div className="suggestion-engagement">
+              {recipe.comments.length} comment{recipe.comments.length !== 1 ? "s" : ""}
+            </div>
+          )}
         </div>
-
-        {recipe.comments.length > 0 && (
-          <div className="suggestion-engagement">
-            {recipe.comments.length} comment{recipe.comments.length !== 1 ? "s" : ""}
-          </div>
-        )}
       </div>
-    </div>
-  )
-
-  // Pad to always show 2 cards at a time
-  const getPaddedRecipes = (recipesArr) => {
-    if (recipesArr.length >= 2) return recipesArr;
-    return [...recipesArr, ...Array(2 - recipesArr.length).fill(null)];
+    );
   };
-  const paddedSuggestions = getPaddedRecipes(suggestedRecipes);
-  const paddedTrending = getPaddedRecipes(trendingRecipes);
+
+  // Remove padding logic
+  // const getPaddedRecipes = (recipesArr) => {
+  //   if (recipesArr.length >= 3) return recipesArr;
+  //   return [...recipesArr, ...Array(3 - recipesArr.length).fill(null)];
+  // };
+  // const paddedSuggestions = getPaddedRecipes(suggestedRecipes);
+  // const paddedTrending = getPaddedRecipes(trendingRecipes);
 
   // Calculate number of pages for dots
-  const suggestionPages = Math.ceil(paddedSuggestions.length / 2);
-  const trendingPages = Math.ceil(paddedTrending.length / 2);
+  const suggestionChunks = chunkAndPad(suggestedRecipes, 3);
+  const suggestionPages = suggestionChunks.length;
+  // Add chunking for trending
+  const trendingChunks = chunkAndPad(trendingRecipes, 3);
+  const trendingPages = trendingChunks.length;
 
   if (!recipes.length) return null
 
@@ -285,29 +303,34 @@ export default function RecipeSuggestions({ onRecipeClick }) {
           </div>
 
           <div className="suggestions-carousel">
-            <button className="carousel-btn prev" onClick={prevSuggestion} disabled={suggestedRecipes.length <= 2}>
+            <button className="carousel-btn prev" onClick={prevSuggestion} disabled={suggestionPages <= 1}>
               <ChevronLeft size={20} />
             </button>
 
             <div className="suggestions-container">
               <div
-                className="suggestions-track"
+                className="suggestions-track suggestions-track-animate"
                 style={{
-                  transform: `translateX(-${currentSuggestionIndex * (100 / 2)}%)`,
-                  width: `${(paddedSuggestions.length / 2) * 100}%`,
+                  width: `${suggestionPages * 100}%`,
+                  display: 'flex',
+                  transform: `translateX(-${currentSuggestionIndex * (100 / suggestionPages)}%)`,
                 }}
               >
-                {paddedSuggestions.map((recipe, idx) =>
-                  recipe ? (
-                    <SuggestionCard key={`suggested-${recipe.id}-${idx}`} recipe={recipe} />
-                  ) : (
-                    <div key={`suggested-empty-${idx}`} className="suggestion-card empty-card" />
-                  )
-                )}
+                {suggestionChunks.map((chunk, pageIdx) => (
+                  <div key={pageIdx} className="suggestions-page">
+                    {chunk.map((recipe, idx) =>
+                      recipe ? (
+                        <SuggestionCard key={`suggested-${recipe.id}-${idx}`} recipe={recipe} />
+                      ) : (
+                        <div key={`suggested-empty-${idx}`} className="suggestion-card empty-card" />
+                      )
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
 
-            <button className="carousel-btn next" onClick={nextSuggestion} disabled={suggestedRecipes.length <= 2}>
+            <button className="carousel-btn next" onClick={nextSuggestion} disabled={suggestionPages <= 1}>
               <ChevronRight size={20} />
             </button>
           </div>
@@ -334,31 +357,33 @@ export default function RecipeSuggestions({ onRecipeClick }) {
             </h3>
             <p>Popular recipes everyone's talking about</p>
           </div>
-
           <div className="suggestions-carousel">
-            <button className="carousel-btn prev" onClick={prevTrending} disabled={trendingRecipes.length <= 2}>
+            <button className="carousel-btn prev" onClick={prevTrending} disabled={trendingPages <= 1}>
               <ChevronLeft size={20} />
             </button>
-
             <div className="suggestions-container">
               <div
-                className="suggestions-track"
+                className="suggestions-track suggestions-track-animate"
                 style={{
-                  transform: `translateX(-${currentTrendingIndex * (100 / 2)}%)`,
-                  width: `${(paddedTrending.length / 2) * 100}%`,
+                  width: `${trendingPages * 100}%`,
+                  display: 'flex',
+                  transform: `translateX(-${currentTrendingIndex * (100 / trendingPages)}%)`,
                 }}
               >
-                {paddedTrending.map((recipe, idx) =>
-                  recipe ? (
-                    <SuggestionCard key={`trending-${recipe.id}-${idx}`} recipe={recipe} isTrending />
-                  ) : (
-                    <div key={`trending-empty-${idx}`} className="suggestion-card empty-card" />
-                  )
-                )}
+                {trendingChunks.map((chunk, pageIdx) => (
+                  <div key={pageIdx} className="suggestions-page">
+                    {chunk.map((recipe, idx) =>
+                      recipe ? (
+                        <SuggestionCard key={`trending-${recipe.id}-${idx}`} recipe={recipe} isTrending />
+                      ) : (
+                        <div key={`trending-empty-${idx}`} className="suggestion-card empty-card" />
+                      )
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
-
-            <button className="carousel-btn next" onClick={nextTrending} disabled={trendingRecipes.length <= 2}>
+            <button className="carousel-btn next" onClick={nextTrending} disabled={trendingPages <= 1}>
               <ChevronRight size={20} />
             </button>
           </div>

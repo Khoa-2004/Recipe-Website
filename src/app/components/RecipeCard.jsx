@@ -1,7 +1,7 @@
 "use client"
 
 import { useRecipes } from "../contexts/RecipeContext"
-import { Heart, Star, Clock, Users, Share2 } from "lucide-react"
+import { Heart, Star, Clock, Users, Share2, Calendar } from "lucide-react"
 
 export default function RecipeCard({ recipe, onClick }) {
   const { favorites, toggleFavorite } = useRecipes()
@@ -60,6 +60,17 @@ export default function RecipeCard({ recipe, onClick }) {
     return sum / ratings.length;
   }
 
+  // Helper to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  }
+
   return (
     <div className="recipe-card" onClick={onClick}>
       <div className="recipe-image">
@@ -81,6 +92,11 @@ export default function RecipeCard({ recipe, onClick }) {
         {recipe.createdBy && (
           <p className="recipe-author">by {recipe.createdBy}</p>
         )}
+        {/* Move rating stars above meta info */}
+        <div className="recipe-rating" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          {renderStars(getAverageRating(recipe.ratings))}
+          <span>({getAverageRating(recipe.ratings).toFixed(2)})</span>
+        </div>
         <div className="recipe-meta">
           <div className="meta-item">
             <Clock size={16} />
@@ -90,10 +106,12 @@ export default function RecipeCard({ recipe, onClick }) {
             <Users size={16} />
             <span>{recipe.servings} servings</span>
           </div>
-          <div className="meta-item rating">
-            {renderStars(getAverageRating(recipe.ratings))}
-            <span>({getAverageRating(recipe.ratings).toFixed(2)})</span>
-          </div>
+          {recipe.createdAt && (
+            <div className="meta-item">
+              <Calendar size={16} />
+              <span>{formatDate(recipe.createdAt)}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

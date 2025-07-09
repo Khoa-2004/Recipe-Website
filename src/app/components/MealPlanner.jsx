@@ -515,7 +515,9 @@ export default function MealPlanner() {
                     <div className="plan-stats">
                       <span>
                         {Object.values(plan.plan).reduce(
-                          (total, day) => total + day.length,
+                          (total, day) =>
+                            total +
+                            Object.values(day).reduce((slotTotal, slotArr) => slotTotal + slotArr.length, 0),
                           0
                         )}{" "}
                         recipes planned
@@ -578,7 +580,9 @@ export default function MealPlanner() {
                 <div className="summary-stats">
                   <span>
                     {Object.values(mealPlan).reduce(
-                      (total, day) => total + day.length,
+                      (total, day) =>
+                        total +
+                        Object.values(day).reduce((slotTotal, slotArr) => slotTotal + slotArr.length, 0),
                       0
                     )}{" "}
                     recipes planned

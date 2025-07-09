@@ -179,7 +179,7 @@ export default function ProfilePage() {
                 {userRecipes.map((recipe) => (
                   <div key={recipe.id} className="recipe-card-profile">
                     <div className="recipe-image-small">
-                      <img src={`/placeholder.svg?height=150&width=200`} alt={recipe.title} />
+                      <img src={recipe.imageUrl || `/placeholder.svg?height=150&width=200`} alt={recipe.title} />
                     </div>
                     <div className="recipe-info-profile">
                       <h4>{recipe.title}</h4>
@@ -214,7 +214,7 @@ export default function ProfilePage() {
                 {favoriteRecipes.map((recipe) => (
                   <div key={recipe.id} className="recipe-card-profile">
                     <div className="recipe-image-small">
-                      <img src={`/placeholder.svg?height=150&width=200`} alt={recipe.title} />
+                      <img src={recipe.imageUrl || `/placeholder.svg?height=150&width=200`} alt={recipe.title} />
                     </div>
                     <div className="recipe-info-profile">
                       <h4>{recipe.title}</h4>
