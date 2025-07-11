@@ -50,7 +50,7 @@ export default function RecipeSuggestions({ onRecipeClick }) {
     const trending = recipes
       .slice()
       .sort((a, b) => getAverageRating(b.ratings) - getAverageRating(a.ratings))
-      .slice(0, 5)
+      // .slice(0, 5) // Removed limit for unlimited trending recipes
 
     setTrendingRecipes(trending)
   }
@@ -339,23 +339,23 @@ export default function RecipeSuggestions({ onRecipeClick }) {
             {Array.from({ length: suggestionPages }).map((_, idx) => (
               <button
                 key={idx}
-                className={`carousel-dot${currentSuggestionIndex === idx ? " active" : ""}`}
+                className={`carousel-dot${idx === currentSuggestionIndex ? " active" : ""}`}
                 onClick={() => setCurrentSuggestionIndex(idx)}
+                aria-label={`Go to suggestion page ${idx + 1}`}
               />
             ))}
           </div>
         </div>
       )}
-
-      {/* Trending Recipes Section */}
+      {/* Trending Recipes Section - unified with suggestions */}
       {trendingRecipes.length > 0 && (
         <div className="suggestions-section">
           <div className="suggestions-header">
             <h3>
               <TrendingUp size={20} />
-              Trending Now
+              Trending Recipes
             </h3>
-            <p>Popular recipes everyone's talking about</p>
+            <p>Popular and highly rated by the community</p>
           </div>
           <div className="suggestions-carousel">
             <button className="carousel-btn prev" onClick={prevTrending} disabled={trendingPages <= 1}>
@@ -392,13 +392,14 @@ export default function RecipeSuggestions({ onRecipeClick }) {
             {Array.from({ length: trendingPages }).map((_, idx) => (
               <button
                 key={idx}
-                className={`carousel-dot${currentTrendingIndex === idx ? " active" : ""}`}
+                className={`carousel-dot${idx === currentTrendingIndex ? " active" : ""}`}
                 onClick={() => setCurrentTrendingIndex(idx)}
+                aria-label={`Go to trending page ${idx + 1}`}
               />
             ))}
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }

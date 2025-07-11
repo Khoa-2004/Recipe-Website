@@ -156,6 +156,12 @@
           "username": "sybau",
           "text": "efef",
           "timestamp": "2025-07-08T10:40:03.114Z"
+        },
+        {
+          "id": "796b379d-bc94-496e-a95c-10a73ea283bd",
+          "username": "Khoa",
+          "text": "efef",
+          "timestamp": "2025-07-10T08:20:52.277Z"
         }
       ]
     },
@@ -853,5 +859,347 @@
       "timestamp": "2025-07-07T16:02:08.386Z"
     }
   ],
-  "mealPlans": []
+  "mealPlans": [
+    {
+      "id": "1cba",
+      "name": "1",
+      "plan": {
+        "Monday": {
+          "morning": [
+            {
+              "id": "140c",
+              "title": "Garlic Butter Zucchini Noodles with Grilled Chicken",
+              "description": "This low-carb, high-protein dinner swaps traditional pasta for zucchini noodles, tossed in a rich garlic butter sauce and topped with juicy grilled chicken. It's a quick, flavorful meal perfect for anyone watching their carbs but not willing to sacrifice taste.",
+              "ingredients": [
+                "2 medium zucchini, spiralized",
+                "2 boneless, skinless chicken breasts"
+              ],
+              "instructions": "Grill the Chicken:\n\nSeason chicken breasts with salt, pepper, and Italian seasoning.\n\nHeat olive oil in a grill pan or skillet over medium heat.\n\nCook chicken for 6–7 minutes per side until fully cooked. Remove and let rest before slicing.\n\nPrepare the Garlic Butter Sauce:\n\nIn the same pan, reduce heat to low. Add butter and garlic, sauté for 1–2 minutes until fragrant.\n\nCook Zucchini Noodles:\n\nAdd zucchini noodles to the pan and toss in the garlic butter for 2–3 minutes until just tender.\n\nSqueeze in lemon juice if desired.\n\nAssemble:\n\nDivide the zucchini noodles between two plates.\n\nTop with sliced grilled chicken and garnish with parsley.",
+              "cookingTime": 25,
+              "servings": 2,
+              "category": "Dinner",
+              "dietaryTags": [
+                "keto",
+                "low-carb",
+                "high-protein",
+                "gluten-free"
+              ],
+              "nutritionalInfo": {
+                "calories": 390,
+                "protein": 35,
+                "fat": 24,
+                "carbs": 6
+              },
+              "imageUrl": "https://hips.hearstapps.com/hmg-prod/images/grilled-chicken-with-zucchini-noodles-1588952833.jpg?crop=1xw:0.84375xh;center,top&resize=1200:*",
+              "createdBy": "Khoa",
+              "createdAt": "2025-07-02T09:23:54.230Z",
+              "ratings": [
+                {
+                  "userId": "user1",
+                  "rating": 4
+                },
+                {
+                  "userId": "user2",
+                  "rating": 5
+                },
+                {
+                  "userId": "e24b",
+                  "rating": 4
+                }
+              ],
+              "comments": [
+                {
+                  "id": 1751448244551,
+                  "username": "Khoa",
+                  "text": "good",
+                  "timestamp": "2025-07-02T09:24:04.559Z"
+                }
+              ]
+            },
+            {
+              "id": "140c",
+              "title": "Garlic Butter Zucchini Noodles with Grilled Chicken",
+              "description": "This low-carb, high-protein dinner swaps traditional pasta for zucchini noodles, tossed in a rich garlic butter sauce and topped with juicy grilled chicken. It's a quick, flavorful meal perfect for anyone watching their carbs but not willing to sacrifice taste.",
+              "ingredients": [
+                "2 medium zucchini, spiralized",
+                "2 boneless, skinless chicken breasts"
+              ],
+              "instructions": "Grill the Chicken:\n\nSeason chicken breasts with salt, pepper, and Italian seasoning.\n\nHeat olive oil in a grill pan or skillet over medium heat.\n\nCook chicken for 6–7 minutes per side until fully cooked. Remove and let rest before slicing.\n\nPrepare the Garlic Butter Sauce:\n\nIn the same pan, reduce heat to low. Add butter and garlic, sauté for 1–2 minutes until fragrant.\n\nCook Zucchini Noodles:\n\nAdd zucchini noodles to the pan and toss in the garlic butter for 2–3 minutes until just tender.\n\nSqueeze in lemon juice if desired.\n\nAssemble:\n\nDivide the zucchini noodles between two plates.\n\nTop with sliced grilled chicken and garnish with parsley.",
+              "cookingTime": 25,
+              "servings": 2,
+              "category": "Dinner",
+              "dietaryTags": [
+                "keto",
+                "low-carb",
+                "high-protein",
+                "gluten-free"
+              ],
+              "nutritionalInfo": {
+                "calories": 390,
+                "protein": 35,
+                "fat": 24,
+                "carbs": 6
+              },
+              "imageUrl": "https://hips.hearstapps.com/hmg-prod/images/grilled-chicken-with-zucchini-noodles-1588952833.jpg?crop=1xw:0.84375xh;center,top&resize=1200:*",
+              "createdBy": "Khoa",
+              "createdAt": "2025-07-02T09:23:54.230Z",
+              "ratings": [
+                {
+                  "userId": "user1",
+                  "rating": 4
+                },
+                {
+                  "userId": "user2",
+                  "rating": 5
+                },
+                {
+                  "userId": "e24b",
+                  "rating": 4
+                }
+              ],
+              "comments": [
+                {
+                  "id": 1751448244551,
+                  "username": "Khoa",
+                  "text": "good",
+                  "timestamp": "2025-07-02T09:24:04.559Z"
+                }
+              ]
+            },
+            {
+              "id": "140c",
+              "title": "Garlic Butter Zucchini Noodles with Grilled Chicken",
+              "description": "This low-carb, high-protein dinner swaps traditional pasta for zucchini noodles, tossed in a rich garlic butter sauce and topped with juicy grilled chicken. It's a quick, flavorful meal perfect for anyone watching their carbs but not willing to sacrifice taste.",
+              "ingredients": [
+                "2 medium zucchini, spiralized",
+                "2 boneless, skinless chicken breasts"
+              ],
+              "instructions": "Grill the Chicken:\n\nSeason chicken breasts with salt, pepper, and Italian seasoning.\n\nHeat olive oil in a grill pan or skillet over medium heat.\n\nCook chicken for 6–7 minutes per side until fully cooked. Remove and let rest before slicing.\n\nPrepare the Garlic Butter Sauce:\n\nIn the same pan, reduce heat to low. Add butter and garlic, sauté for 1–2 minutes until fragrant.\n\nCook Zucchini Noodles:\n\nAdd zucchini noodles to the pan and toss in the garlic butter for 2–3 minutes until just tender.\n\nSqueeze in lemon juice if desired.\n\nAssemble:\n\nDivide the zucchini noodles between two plates.\n\nTop with sliced grilled chicken and garnish with parsley.",
+              "cookingTime": 25,
+              "servings": 2,
+              "category": "Dinner",
+              "dietaryTags": [
+                "keto",
+                "low-carb",
+                "high-protein",
+                "gluten-free"
+              ],
+              "nutritionalInfo": {
+                "calories": 390,
+                "protein": 35,
+                "fat": 24,
+                "carbs": 6
+              },
+              "imageUrl": "https://hips.hearstapps.com/hmg-prod/images/grilled-chicken-with-zucchini-noodles-1588952833.jpg?crop=1xw:0.84375xh;center,top&resize=1200:*",
+              "createdBy": "Khoa",
+              "createdAt": "2025-07-02T09:23:54.230Z",
+              "ratings": [
+                {
+                  "userId": "user1",
+                  "rating": 4
+                },
+                {
+                  "userId": "user2",
+                  "rating": 5
+                },
+                {
+                  "userId": "e24b",
+                  "rating": 4
+                }
+              ],
+              "comments": [
+                {
+                  "id": 1751448244551,
+                  "username": "Khoa",
+                  "text": "good",
+                  "timestamp": "2025-07-02T09:24:04.559Z"
+                }
+              ]
+            }
+          ],
+          "afternoon": [
+            {
+              "id": "1e65",
+              "title": "Fluffy Banana Oat Protein Pancakes",
+              "description": "Start your morning strong with these fluffy banana oat protein pancakes. Made with gluten‑free oats, ripe banana, and plant‑based protein powder, they're naturally sweet, dairy‑free, and packed with muscle‑fueling protein.",
+              "ingredients": [
+                "1 cup gluten‑free rolled oats",
+                "1 ripe banana",
+                "2 large eggs"
+              ],
+              "instructions": "Blend the Batter:\nCombine oats, banana, eggs, protein powder, almond milk, baking powder, cinnamon, and salt in a blender. Blend until smooth and pourable. If too thick, add a splash more almond milk.\n\nHeat the Pan:\nWarm a nonstick skillet or griddle over medium heat. Add a thin film of coconut or avocado oil.\n\nCook Pancakes:\nPour ~1/4 cup batter per pancake onto the hot pan. Cook 2–3 minutes until bubbles form on top and edges look set. Flip and cook an additional 1–2 minutes until golden.\n\nServe:\nStack pancakes on plates, add your favorite toppings (berries, nut butter, or a light drizzle of maple syrup), and enjoy immediately.",
+              "cookingTime": 15,
+              "servings": 2,
+              "category": "Breakfast",
+              "dietaryTags": [
+                "vegetarian",
+                "gluten-free",
+                "dairy-free",
+                "high-protein"
+              ],
+              "nutritionalInfo": {
+                "calories": 332,
+                "protein": 23,
+                "fat": 8,
+                "carbs": 43
+              },
+              "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH1Cmb2g6nAcZRQkk_tuTwYFD8M09XZbbaAg&s",
+              "createdBy": "Khoa",
+              "createdAt": "2025-07-02T09:29:22.857Z",
+              "ratings": [
+                {
+                  "userId": "user1",
+                  "rating": 4
+                },
+                {
+                  "userId": "user2",
+                  "rating": 5
+                },
+                {
+                  "userId": "e24b",
+                  "rating": 5
+                }
+              ],
+              "comments": [
+                {
+                  "id": "e85c5f83-4f62-4040-85b1-4ff20727a50a",
+                  "username": "sybau",
+                  "text": "efef",
+                  "timestamp": "2025-07-08T10:40:03.114Z"
+                }
+              ]
+            },
+            {
+              "id": "9b66",
+              "title": "Grilled Salmon Power Bowl2",
+              "description": "A vibrant, nutrient-dense lunch bowl featuring grilled salmon, quinoa, fresh veggies, and a creamy avocado-lime dressing. It's rich in protein, healthy fats, and fiber — perfect for fueling your afternoon without the post-lunch crash.",
+              "ingredients": [
+                "2 salmon fillets (4–5 oz each)",
+                "1/2 cup quinoa (dry)",
+                "1 cup water or broth (for quinoa)"
+              ],
+              "instructions": "Cook the Quinoa:\nRinse quinoa under cold water. Combine with 1 cup water in a small pot. Bring to a boil, reduce heat, cover, and simmer for 12–15 minutes. Fluff with a fork and set aside.\n\nPrepare the Dressing:\nIn a blender or small food processor, combine avocado, lime juice, olive oil, garlic powder, salt, and a splash of water. Blend until smooth. Adjust thickness with more water if needed.\n\nGrill the Salmon:\nRub salmon with olive oil, salt, and pepper. Grill or pan-sear for 3–4 minutes per side, until cooked through and flaky.\n\nAssemble the Bowl:\nDivide quinoa between two bowls. Arrange tomatoes, cucumber, cabbage, and carrots around the bowl. Top each with grilled salmon and drizzle with avocado-lime dressing.",
+              "cookingTime": 30,
+              "servings": 2,
+              "category": "Lunch",
+              "dietaryTags": [
+                "gluten-free",
+                "dairy-free",
+                "low-carb",
+                "high-protein"
+              ],
+              "nutritionalInfo": {
+                "calories": 480,
+                "protein": 35,
+                "fat": 26,
+                "carbs": 28
+              },
+              "imageUrl": "https://www.cafishgrill.com/cdn/shop/files/cfgolo122723_SalmonPowerBowl.jpg?v=1703782374",
+              "createdBy": "Khoa",
+              "createdAt": "2025-07-02T09:31:21.791Z",
+              "ratings": [
+                {
+                  "userId": "user1",
+                  "rating": 4
+                },
+                {
+                  "userId": "user2",
+                  "rating": 5
+                },
+                {
+                  "userId": "e24b",
+                  "rating": 4
+                }
+              ],
+              "comments": []
+            },
+            {
+              "id": "d5c3",
+              "title": "Chia Pudding with Berries",
+              "description": "A refreshing and nutritious chia seed pudding topped with fresh berries.",
+              "ingredients": [
+                "3 tbsp chia seeds",
+                "1 cup almond milk",
+                "1/2 cup berries",
+                "1 tsp maple syrup"
+              ],
+              "instructions": "Mix chia seeds with almond milk and maple syrup. Chill overnight. Top with berries.",
+              "cookingTime": 11,
+              "servings": 2,
+              "category": "Breakfast",
+              "dietaryTags": [
+                "vegan",
+                "gluten-free",
+                "low-sodium"
+              ],
+              "nutritionalInfo": {
+                "calories": 200,
+                "protein": 6,
+                "fat": 10,
+                "carbs": 20
+              },
+              "imageUrl": "https://thefoodiephysician.com/wp-content/uploads/2018/01/Berry-Chia-Pudding-Feature.jpg",
+              "createdBy": "sybau",
+              "createdAt": "2025-07-08T11:00:27.874Z",
+              "rating": 0,
+              "comments": [
+                {
+                  "id": "11a77aaf-3954-4d01-8fdd-a9852ee732ab",
+                  "username": "sybau",
+                  "text": "ngon",
+                  "timestamp": "2025-07-08T11:00:41.778Z"
+                }
+              ],
+              "ratings": [
+                {
+                  "userId": "f07a",
+                  "rating": 5
+                }
+              ]
+            }
+          ],
+          "evening": [],
+          "night": []
+        },
+        "Tuesday": {
+          "morning": [],
+          "afternoon": [],
+          "evening": [],
+          "night": []
+        },
+        "Wednesday": {
+          "morning": [],
+          "afternoon": [],
+          "evening": [],
+          "night": []
+        },
+        "Thursday": {
+          "morning": [],
+          "afternoon": [],
+          "evening": [],
+          "night": []
+        },
+        "Friday": {
+          "morning": [],
+          "afternoon": [],
+          "evening": [],
+          "night": []
+        },
+        "Saturday": {
+          "morning": [],
+          "afternoon": [],
+          "evening": [],
+          "night": []
+        },
+        "Sunday": {
+          "morning": [],
+          "afternoon": [],
+          "evening": [],
+          "night": []
+        }
+      },
+      "createdAt": "2025-07-10T08:18:32.880Z",
+      "userId": "e24b"
+    }
+  ]
 }
